@@ -4,6 +4,7 @@ import db from "@/db/db";
 import { z } from "zod";
 import fs from "fs/promises";
 import { notFound, redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 const fileSchema = z.instanceof(File, { message: "required" });
 // if file size is 0 then, the other part of Or will not be triggered, the condition will be passed to next refine check.
@@ -46,6 +47,10 @@ export async function addProducts(prevState: unknown, formData: FormData) {
          imagePath,
       },
    });
+
+   // any changes done by the admin will revalidate the cache.
+   revalidatePath("/products");
+   revalidatePath("/");
 
    redirect("/admin/products");
 }
@@ -94,6 +99,9 @@ export async function updateProducts(id: string, prevState: unknown, formData: F
       },
    });
 
+   revalidatePath("/products");
+   revalidatePath("/");
+
    redirect("/admin/products");
 }
 
@@ -107,6 +115,9 @@ export async function toggleProductAvailability(
          isAvailableForPurchase,
       },
    });
+
+   revalidatePath("/products");
+   revalidatePath("/");
 }
 
 export async function deleteProduct(id: string) {
@@ -116,4 +127,7 @@ export async function deleteProduct(id: string) {
 
    await fs.unlink(product.filePath);
    await fs.unlink(`public${product.imagePath}`); // not adding / after public, because it is already added in imagePath.
+
+   revalidatePath("/products");
+   revalidatePath("/");
 }

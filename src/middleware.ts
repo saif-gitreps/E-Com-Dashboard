@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isValid } from "zod";
 import { isValidPassword } from "./lib/isValidPassword";
 
 export async function middleware(req: NextRequest) {
@@ -23,12 +22,10 @@ async function isAuthenticated(req: NextRequest) {
       .toString()
       .split(":");
 
-   isValidPassword(password, "password");
-
-   //    return (
-   //       username === process.env.ADMIN_USERNAME &&
-   //       (await isValidPassword(password, process.env.ADMIN_PASSWORD as string))
-   //    );
+   return (
+      username === process.env.ADMIN_USERNAME &&
+      (await isValidPassword(password, process.env.ADMIN_PASSWORD as string))
+   );
 }
 
 // covers any page with /admin/ in the path
