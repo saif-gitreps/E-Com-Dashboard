@@ -135,7 +135,7 @@ function Form({
                <Button
                   className="w-full"
                   size="lg"
-                  disabled={stripe == null || elements == null || isLoading}
+                  disabled={stripe === null || elements === null || isLoading}
                >
                   {isLoading
                      ? "Processing..."
