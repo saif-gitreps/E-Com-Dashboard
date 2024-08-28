@@ -41,7 +41,7 @@ const getNewestProducts = cache(
    { revalidate: 60 * 60 * 24 }
 );
 
-export default function HomePage() {
+export default function HomePage(): React.ReactNode {
    return (
       <main className="space-y-12">
          <ProductGridSection

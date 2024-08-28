@@ -8,7 +8,7 @@ export default function AdminLayout({
    children: React.ReactNode;
 }>) {
    return (
-      <>
+      <div className="flex flex-row">
          <Nav>
             <NavLink href="/admin">Dashboard</NavLink>
             <NavLink href="/admin/products">Products</NavLink>
@@ -16,6 +16,6 @@ export default function AdminLayout({
             <NavLink href="/admin/orders">Sales</NavLink>
          </Nav>
          <div className="container py-6">{children}</div>
-      </>
+      </div>
    );
 }
