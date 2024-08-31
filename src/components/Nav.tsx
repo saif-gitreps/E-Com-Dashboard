@@ -7,7 +7,7 @@ import { ComponentProps, ReactNode } from "react";
 
 export function Nav({ children }: { children: ReactNode }) {
    return (
-      <nav className="bg-primary text-primary-foreground flex flex-col  py-4 w-56 h-screen">
+      <nav className="bg-primary text-primary-foreground flex flex-col w-56 h-auto">
          {children}
       </nav>
    );
