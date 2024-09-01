@@ -8,6 +8,7 @@ import {
    Tailwind,
 } from "@react-email/components";
 import { OrderInformation } from "./_components/OrderInformation";
+require("dotenv").config();
 
 type PurchaseReceiptEmailProps = {
    product: {
@@ -48,11 +49,12 @@ export default function PurchaseReceiptEmail({
             <Head />
             <Body className="font-sans bg-white">
                <Container className="max-w-xl">
-                  <Heading>Purchase Receipt</Heading>
+                  <Heading>Purchase Receipt and other information</Heading>
                   <OrderInformation
                      order={order}
                      product={product}
                      downloadVerification={downloadVerificationId}
+                     serverUrl={process.env.NEXT_PUBLIC_SERVER_URL as string}
                   />
                </Container>
             </Body>

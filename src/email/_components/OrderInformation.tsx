@@ -12,6 +12,7 @@ type orderInformationProps = {
       imagePath: string;
    };
    downloadVerification: string;
+   serverUrl: string;
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en", {
@@ -23,8 +24,8 @@ export function OrderInformation({
    order,
    product,
    downloadVerification,
+   serverUrl,
 }: orderInformationProps) {
-   console.log(process.env.NEXT_PUBLIC_SERVER_URL as string);
    return (
       <>
          <Section>
@@ -54,7 +55,7 @@ export function OrderInformation({
             </Row>
          </Section>
          <Section className="border-solid border-gray-500 rounded-lg p-4 md:p-6 ny-4">
-            <Img src={`${"http://localhost:3000"}${product.imagePath}`} />
+            <Img src={`${serverUrl}${product.imagePath}`} />
          </Section>
       </>
    );
