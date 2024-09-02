@@ -2,12 +2,12 @@ import db from "@/db/db";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Resend } from "resend";
+import PurchaseReceiptEmail from "@/email/PurchaseReceipt";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 const resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export async function POST(req: NextRequest) {
-   console.log("checking event trigger");
    const event = await stripe.webhooks.constructEvent(
       await req.text(),
       req.headers.get("stripe-signature") as string,
@@ -54,13 +54,19 @@ export async function POST(req: NextRequest) {
       });
 
       // need to replace this with a dyanmic email from different admins.
-      console.log("sending email to", email);
       await resend.emails.send({
          from: `Support <${process.env.SENDER_EMAIL as string}>`,
          to: [email],
          subject: "Order confirmation",
-         react: <h1>hi</h1>,
+         react: (
+            <PurchaseReceiptEmail
+               order={order}
+               product={product}
+               downloadVerificationId={downloadVerification.id}
+            />
+         ),
       });
    }
+
    return new NextResponse();
 }

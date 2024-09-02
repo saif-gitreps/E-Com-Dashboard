@@ -5,10 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ComponentProps, ReactNode } from "react";
 
-export function Nav({ children }: { children: ReactNode }) {
+export function Nav({
+   children,
+   className,
+}: {
+   children: ReactNode;
+   className?: string;
+}) {
    return (
-      <nav className="bg-primary text-primary-foreground flex flex-col w-56 h-auto">
-         {children}
+      <nav
+         className={`bg-primary text-primary-foreground fixed inset-y-0 left-0 w-56 h-screen ${className}`}
+      >
+         <div className="flex flex-col h-full">{children}</div>
       </nav>
    );
 }

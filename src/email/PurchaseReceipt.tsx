@@ -8,12 +8,12 @@ import {
    Tailwind,
 } from "@react-email/components";
 import { OrderInformation } from "./_components/OrderInformation";
-require("dotenv").config();
 
 type PurchaseReceiptEmailProps = {
    product: {
       name: string;
       imagePath: string;
+      description: string;
    };
    order: {
       id: string;
@@ -28,6 +28,7 @@ PurchaseReceiptEmail.PreviewProps = {
       name: "product name",
       imagePath:
          "/products/216d97be-9f42-424b-9de5-058e03fab3d2-WhatsApp Image 2024-07-09 at 12.16.07 (2).jpeg",
+      description: "product description",
    },
    order: {
       id: crypto.randomUUID(),
@@ -53,8 +54,7 @@ export default function PurchaseReceiptEmail({
                   <OrderInformation
                      order={order}
                      product={product}
-                     downloadVerification={downloadVerificationId}
-                     serverUrl={process.env.NEXT_PUBLIC_SERVER_URL as string}
+                     downloadVerificationId={downloadVerificationId}
                   />
                </Container>
             </Body>
