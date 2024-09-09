@@ -2,8 +2,11 @@
 
 import db from "@/db/db";
 import { z } from "zod";
+import { Resend } from "resend";
+import OrderHistoryEmail from "@/email/OrderHistory";
 
 const emailSchema = z.string().email();
+const resend: Resend = new Resend(process.env.RESEND_API_KEY as string);
 
 export async function emailOrderHistory(
    prevState: unknown,
@@ -37,5 +40,36 @@ export async function emailOrderHistory(
       },
    });
 
-   return { message: "Email sent" };
+   if (user == null) {
+      return {
+         message: "Check your email to view your order history",
+      };
+   }
+
+   const orders = user.orders.map(async (order) => {
+      return {
+         ...order,
+         downloadVerificationId: (
+            await db.downloadVerification.create({
+               data: {
+                  expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+                  productId: order.product.id,
+               },
+            })
+         ).id,
+      };
+   });
+
+   const data = await resend.emails.send({
+      from: `Support <${process.env.SENDER_EMAIL as string}>`,
+      to: [user.email],
+      subject: "Order history",
+      react: <OrderHistoryEmail orders={await Promise.all(orders)} />,
+   });
+
+   if (data.error) {
+      return { error: "Email not sent, please try again." };
+   }
+
+   return { message: "Check your email to view your order history" };
 }
