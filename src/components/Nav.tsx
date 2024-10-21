@@ -14,7 +14,7 @@ export function Nav({
 }) {
    return (
       <nav
-         className={`bg-primary text-primary-foreground fixed inset-y-0 left-0 w-56 h-screen ${className}`}
+         className={`hidden sm:block bg-primary text-primary-foreground fixed inset-y-0 left-0 sm:w-56 sm:h-screen ${className}`}
       >
          <div className="flex flex-col h-full">{children}</div>
       </nav>

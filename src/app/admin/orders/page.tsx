@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import db from "@/db/db";
 import { formatCurrency } from "@/lib/formatter";
-import { PageHeader } from "../_components/PageHeader";
+
 import {
    DropdownMenu,
    DropdownMenuContent,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
 import { DeleteDropDownItem } from "./_components/OrderActions";
+import { PageHeader } from "@/components/PageHeader";
 
 function getOrders() {
    return db.order.findMany({
