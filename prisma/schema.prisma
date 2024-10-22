@@ -6,49 +6,55 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
 }
 
 model Product {
-  id String @id @default(uuid())
-  name String
+  id String @id @default(uuid()) @db.Uuid
+  name String @db.VarChar(255)
   priceInCents Int
-  filePath String
-  imagePath String
-  description String
+  filePath String @db.Text
+  imagePath String @db.Text
+  description String @db.Text
   isAvailableForPurchase Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders Order[] 
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  orders Order[]
   downloadVerifications DownloadVerification[]
 }
 
 model User {
-  id String @id @default(uuid())
-  email String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  orders Order[] 
+  id String @id @default(uuid()) @db.Uuid
+  email String @unique @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  orders Order[]
 }
 
 model Order {
-  id String @id @default(uuid())
+  id String @id @default(uuid()) @db.Uuid
   pricePaidInCents Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
 
-  userId String
-  productId String
+  userId String @db.Uuid
+  productId String @db.Uuid
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Restrict) // Restrict because we don't want to delete the product if it's in an order, to protect the integrity of our business.
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([productId])
 }
 
 model DownloadVerification {
-  id String @id @default(uuid())
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id String @id @default(uuid()) @db.Uuid
+  expiresAt DateTime @db.Timestamp(6)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  productId String
+  productId String @db.Uuid
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
 }
