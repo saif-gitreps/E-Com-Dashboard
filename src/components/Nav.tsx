@@ -14,9 +14,25 @@ export function Nav({
 }) {
    return (
       <nav
-         className={`hidden sm:block bg-primary text-primary-foreground fixed inset-y-0 left-0 sm:w-56 sm:h-screen ${className}`}
+         className={`hidden sm:block bg-primary text-primary-foreground fixed inset-y-0 left-0 sm:w-32 md:w-40  sm:h-screen ${className}`}
       >
          <div className="flex flex-col h-full">{children}</div>
+      </nav>
+   );
+}
+
+export function MobileNav({
+   children,
+   className,
+}: {
+   children: ReactNode;
+   className?: string;
+}) {
+   return (
+      <nav
+         className={`sm:hidden bg-primary text-primary-foreground p-2 px-4 fixed z-50 w-full ${className}`}
+      >
+         <div className="flex flex-row justify-between">{children}</div>
       </nav>
    );
 }
@@ -31,5 +47,23 @@ export function NavLink(props: Omit<ComponentProps<typeof Link>, "className">) {
             pathname === props.href && "bg-background text-foreground"
          )}
       />
+   );
+}
+
+type NavItemProps = {
+   className?: string;
+   [key: string]: any;
+   children: ReactNode;
+};
+
+export function NavItem({ className, children, ...props }: NavItemProps) {
+   return (
+      <p
+         {...props}
+         className={`p-4 hover:bg-secondary hover:text-secondary-foreground focus:bg-secondary focus:text-secondary-foreground 
+            ${className}`}
+      >
+         {children}
+      </p>
    );
 }
