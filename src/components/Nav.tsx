@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ComponentProps, ReactNode } from "react";
 
+// TODO: refactor all nav components to sep files
+
 export function Nav({
    children,
    className,
@@ -14,7 +16,7 @@ export function Nav({
 }) {
    return (
       <nav
-         className={`hidden sm:block bg-primary text-primary-foreground fixed inset-y-0 left-0 sm:w-32 md:w-40  sm:h-screen ${className}`}
+         className={`hidden sm:block bg-primary text-primary-foreground fixed inset-y-0 left-0 sm:w-32 md:w-56 sm:h-screen ${className}`}
       >
          <div className="flex flex-col h-full">{children}</div>
       </nav>
@@ -30,7 +32,7 @@ export function MobileNav({
 }) {
    return (
       <nav
-         className={`sm:hidden bg-primary text-primary-foreground p-2 px-4 fixed z-50 w-full ${className}`}
+         className={`sm:hidden bg-primary text-primary-foreground py-3 px-4 fixed top-0 z-50 w-full ${className}`}
       >
          <div className="flex flex-row justify-between">{children}</div>
       </nav>

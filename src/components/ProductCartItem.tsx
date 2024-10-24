@@ -12,52 +12,54 @@ import {
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Product } from "@prisma/client";
-import AddToCartButton from "./AddToCartButton";
+import { useCart } from "@/hooks/use-cart";
 
-type ProductCardProps = {
-   product: Product;
+type ProductCartItemProps = {
+   id: string;
+   name: string;
+   priceInCents: number;
+   description: string;
+   imagePath: string;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCartItem({
+   id,
+   name,
+   priceInCents,
+   imagePath,
+}: ProductCartItemProps) {
    const router = useRouter();
-   const { id, name, priceInCents, description, imagePath } = product;
+   const { removeItem } = useCart();
 
    return (
-      <Card className="flex overflow-hidden flex-col shadow-sm">
+      <Card className="flex overflow-hidden flex-col shadow-sm mt-4">
          <div
             className="relative w-full h-auto aspect-video hover:opacity-95  hover:cursor-pointer"
             onClick={() => router.push(`/products/${id}`)}
          >
             <Image src={imagePath} alt={name} fill />
          </div>
-         <CardHeader>
+         <CardContent className="flex justify-between py-1 px-5 mt-1">
             <CardTitle>{name}</CardTitle>
             <CardDescription>
                {priceInCents === 1 ? "Free" : formatCurrency(priceInCents / 100)}
             </CardDescription>
-         </CardHeader>
-         <CardContent className="flex flex-grow">
-            <p className="line-clamp-4">{description}</p>
          </CardContent>
-         <CardFooter>
-            {priceInCents === 1 ? (
-               // TODO : Download functionality
-               <Button
-                  size="lg"
-                  className="w-full bg-green-700 text-white hover:bg-green-600"
-               >
-                  Download now
-               </Button>
-            ) : (
-               <AddToCartButton product={product} />
-            )}
+         <CardFooter className="p-2">
+            <Button
+               size="lg"
+               className="w-full "
+               variant="destructive"
+               onClick={() => removeItem(id)}
+            >
+               Remove
+            </Button>
          </CardFooter>
       </Card>
    );
 }
 
-export function ProductCardSkeleton() {
+export function ProductCartItemSkeleton() {
    return (
       <Card className="overflow-hidden flex flex-col animate-pulse">
          <div className="w-full aspect-video bg-gray-300" />

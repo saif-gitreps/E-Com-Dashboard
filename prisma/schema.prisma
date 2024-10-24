@@ -17,19 +17,59 @@ model Product {
   filePath String @db.Text
   imagePath String @db.Text
   description String @db.Text
+  category String @db.VarChar(255)
   isAvailableForPurchase Boolean @default(true)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
+  userId String @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
   orders Order[]
+  productReviews ProductReview[]
   downloadVerifications DownloadVerification[]
+  images ProductImage[]
+}
+model ProductImage {
+  id String  @id @default(uuid()) @db.Uuid
+  imagePath String  @db.Text
+  productId String   @db.Uuid
+  
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+  @@index([productId])
+}
+
+model ProductReview {
+  id String @id @default(uuid()) @db.Uuid
+  rating Int
+  review String @db.Text
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+  userId String @db.Uuid
+  
+  user User @relation(fields: [userId], references: [id], onDelete: NoAction) 
+  productId String @db.Uuid
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([userId])
 }
 
 model User {
   id String @id @default(uuid()) @db.Uuid
   email String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
+  role String @default("USER") @db.VarChar(255)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+  products Product[]
   orders Order[]
+  productReviews ProductReview[]
 }
 
 model Order {
