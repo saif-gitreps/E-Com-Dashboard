@@ -5,37 +5,50 @@ export const dynamic = "force-dynamic";
 
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { LogoutButton } from "@/components/LogoutButton";
+import { cookies } from "next/headers";
+import { decrypt } from "@/lib/session";
 
-export default function Layout({
+export default async function Layout({
    children,
 }: Readonly<{
    children: React.ReactNode;
 }>) {
+   const cookie = cookies().get("session")?.value;
+   const session = await decrypt(cookie);
+   const isAuthenticated = !!session?.userId;
+   const isAdmin = session?.role === "ADMIN";
+
    const navItems = [
-      { name: "Home", href: "/" },
-      { name: "Products", href: "/products" },
-      { name: "My orders", href: "/orders" },
-      { name: "Sign In", href: "/sign-in" },
-      { name: "Logout" },
+      { name: "Home", href: "/", isVisible: true },
+      { name: "Products", href: "/products", isVisible: true },
+      { name: "My orders", href: "/orders", isVisible: isAuthenticated },
+      { name: "Sign In", href: "/sign-in", isVisible: !isAuthenticated },
+      {
+         name: `${!isAdmin ? "Seller" : "Admin"} dashboard`,
+         href: "/admin",
+         isVisible: isAuthenticated,
+      },
    ];
 
-   // TODO: Implement authentication for nav element and refactor
+   // TODO :refactor
    return (
       <div className="mt-11 sm:mt-0 sm:flex sm:flex-row sm:min-h-screen">
          <Nav>
             <SearchBar />
 
-            {navItems.map((item) =>
-               item.href ? (
-                  <NavLink key={item.href} href={item.href}>
-                     {item.name}
-                  </NavLink>
-               ) : (
-                  <NavItem key={item.name}>{item.name}</NavItem>
-               )
+            {navItems.map(
+               (item) =>
+                  item.isVisible && (
+                     <NavLink key={item.href} href={item.href}>
+                        {item.name}
+                     </NavLink>
+                  )
             )}
 
             <Cart />
+
+            {isAuthenticated && <LogoutButton />}
          </Nav>
 
          <MobileNav>
@@ -48,14 +61,13 @@ export default function Layout({
                      <span aria-hidden></span>
                   </SheetTitle>
 
-                  {navItems.map((item) =>
-                     item.href ? (
-                        <NavLink key={item.href} href={item.href}>
-                           {item.name}
-                        </NavLink>
-                     ) : (
-                        <NavItem key={item.name}>{item.name}</NavItem>
-                     )
+                  {navItems.map(
+                     (item) =>
+                        item.isVisible && (
+                           <NavLink key={item.href} href={item.href}>
+                              {item.name}
+                           </NavLink>
+                        )
                   )}
                </SheetContent>
             </Sheet>
@@ -63,6 +75,7 @@ export default function Layout({
             <SearchBar />
 
             <Cart isMobileView />
+            {isAuthenticated && <LogoutButton />}
          </MobileNav>
 
          <div className="sm:ml-32 md:ml-56 flex-1 container py-6">{children}</div>

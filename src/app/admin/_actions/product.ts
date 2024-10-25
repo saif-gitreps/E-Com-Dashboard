@@ -23,6 +23,7 @@ const addSchema = z.object({
 
 export async function addProducts(prevState: unknown, formData: FormData) {
    const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
+
    if (!result.success) {
       return result.error.formErrors.fieldErrors;
    }

@@ -16,6 +16,7 @@ export function ProductForm({ product }: { product?: Product | null }) {
       product == null ? addProducts : updateProducts.bind(null, product.id),
       {}
    );
+
    const [priceInCents, setPriceInCents] = useState<number | undefined>(
       product?.priceInCents
    );

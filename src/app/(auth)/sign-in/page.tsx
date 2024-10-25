@@ -1,10 +1,22 @@
+"use client";
+
 import { PageHeader } from "@/components/PageHeader";
 import { SignInForm } from "./_components/SignInForm";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function SignIn() {
+   const searchParams = useSearchParams();
+
+   const isSeller: boolean = searchParams.get("as") === "seller";
+
+   const router = useRouter();
+
+   const origin = searchParams.get("origin"); // redirect from example: cart page to sign-in
+
    return (
-      <div className="mt-20 border p-2">
+      <div className="mt-20 p-2 space-y-5">
          <PageHeader className="text-center">Sign in</PageHeader>
          <p className="text-center">
             New to the platform?{" "}
@@ -14,10 +26,35 @@ export default function SignIn() {
          </p>
          <SignInForm />
 
-         <p className="text-center mt-10">
-            Or{" "}
+         <p className="text-center">
+            {isSeller ? (
+               <Button
+                  className="text-base"
+                  variant="outline"
+                  onClick={() => {
+                     router.replace("/sign-in", undefined);
+                  }}
+               >
+                  Continue as customer
+               </Button>
+            ) : (
+               <Button
+                  className="text-base"
+                  variant="outline"
+                  onClick={() => {
+                     router.push("?as=seller");
+                  }}
+               >
+                  Continue as seller
+               </Button>
+            )}
+         </p>
+
+         <p className="text-center">Or</p>
+
+         <p className="text-center">
             <Link href="/" className="text-blue-700 hover:underline">
-               continue browsing
+               Continue browsing products
             </Link>
          </p>
       </div>
