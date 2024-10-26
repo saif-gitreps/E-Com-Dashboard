@@ -30,6 +30,7 @@ model Product {
   downloadVerifications DownloadVerification[]
   images ProductImage[]
 }
+
 model ProductImage {
   id String  @id @default(uuid()) @db.Uuid
   imagePath String  @db.Text

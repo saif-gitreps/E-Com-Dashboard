@@ -41,10 +41,9 @@ import { decrypt } from "./lib/session";
 const protectedRoutes = [
    "/products/checkout",
    "/orders",
-   "/admin:path",
-   "/products/:id/purchase",
+   // "/admin:path", TODO: activate it again.
+   // "/products/:id/purchase" <- will be depreciated , new one will be products/checkout,
    "/products/download/:downloadVerificationId",
-   "",
 ];
 const publicRoutes = ["/sign-up", "/sign-in"];
 

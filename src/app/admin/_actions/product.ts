@@ -5,6 +5,7 @@ import { z } from "zod";
 import fs from "fs/promises";
 import { notFound, redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { getCurrentUserFromSession } from "@/app/(auth)/_actions/auth";
 
 const fileSchema = z.instanceof(File, { message: "required" });
 // if file size is 0 then, the other part of Or will not be triggered, the condition will be passed to next refine check.
@@ -19,6 +20,7 @@ const addSchema = z.object({
    priceInCents: z.coerce.number().int().min(1),
    file: fileSchema.refine((file) => file.size > 0, "required"),
    image: imageSchema.refine((file) => file.size > 0, "required"),
+   category: z.string().min(1).toLowerCase(),
 });
 
 export async function addProducts(prevState: unknown, formData: FormData) {
@@ -38,16 +40,28 @@ export async function addProducts(prevState: unknown, formData: FormData) {
    const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
    await fs.writeFile(`public${imagePath}`, Buffer.from(await data.image.arrayBuffer()));
 
-   await db.product.create({
+   const userData = await getCurrentUserFromSession();
+
+   console.log(userData);
+
+   if (!userData?.userId) {
+      return redirect("/sign-in");
+   }
+
+   const product = await db.product.create({
       data: {
          isAvailableForPurchase: false,
          name: data.name,
          description: data.description,
          priceInCents: data.priceInCents,
+         category: data.category,
          filePath,
          imagePath,
+         userId: userData?.userId as string,
       },
    });
+
+   console.log(product);
 
    // any changes done by the admin will revalidate the cache.
    revalidatePath("/products");
@@ -87,6 +101,12 @@ export async function updateProducts(id: string, prevState: unknown, formData: F
          `public${imagePath}`,
          Buffer.from(await data.image.arrayBuffer())
       );
+   }
+
+   const userData = await getCurrentUserFromSession();
+
+   if (!userData?.id) {
+      return notFound();
    }
 
    await db.product.update({

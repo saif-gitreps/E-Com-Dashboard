@@ -1,11 +1,12 @@
 "use server";
 
 import { z } from "zod";
-
 import { redirect } from "next/navigation";
-import { createSession, deleteSession } from "@/lib/session";
+import { createSession, decrypt, deleteSession } from "@/lib/session";
 import bcrypt from "bcrypt";
 import db from "@/db/db";
+import { cookies } from "next/headers";
+import { JWTPayload } from "jose";
 
 const authSchema = z.object({
    email: z.string().email({ message: "Invalid email address" }).trim(),
@@ -98,4 +99,15 @@ export async function signUp(prevState: AuthState, formData: FormData) {
 export async function logout() {
    await deleteSession();
    // redirect("/sign-in");
+}
+
+export async function getCurrentUserFromSession(): Promise<JWTPayload | null> {
+   const cookie = cookies().get("session")?.value;
+   const session = await decrypt(cookie);
+
+   if (!session?.userId) {
+      return null;
+   } else {
+      return session;
+   }
 }
