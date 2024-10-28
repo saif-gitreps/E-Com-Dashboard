@@ -26,7 +26,7 @@ export function ProductCard({ product }: ProductCardProps) {
    return (
       <Card className="flex overflow-hidden flex-col shadow-sm">
          <div
-            className="relative w-full h-auto aspect-video hover:opacity-95  hover:cursor-pointer"
+            className="relative w-full h-auto aspect-video hover:opacity-80 hover:cursor-pointer"
             onClick={() => router.push(`/products/${id}`)}
          >
             <Image src={imagePath} alt={name} fill />

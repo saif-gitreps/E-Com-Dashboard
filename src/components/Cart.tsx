@@ -14,9 +14,12 @@ import { useEffect, useState } from "react";
 import { ProductCartItem } from "./ProductCartItem";
 import { useCart } from "@/hooks/use-cart";
 import { NavItem } from "./Nav";
+import { useRouter } from "next/navigation";
 
 const Cart = ({ isMobileView = false }: { isMobileView?: boolean }) => {
    const [isMounted, setIsMounted] = useState<boolean>(false);
+
+   const router = useRouter();
 
    useEffect(() => setIsMounted(true), []);
 
@@ -67,7 +70,17 @@ const Cart = ({ isMobileView = false }: { isMobileView?: boolean }) => {
                   </ScrollArea>
 
                   <SheetFooter>
-                     <button className="w-full bg-green-700 text-white hover:bg-green-600 p-2 rounded-md flex justify-center">
+                     {/* TODO: close the cart when checkout page is loaded */}
+                     <button
+                        className="w-full bg-green-700 text-white hover:bg-green-600 p-2 rounded-md flex justify-center"
+                        onClick={() =>
+                           router.push(
+                              `/products/checkout?${items
+                                 .map((item) => `pid=${item.product.id}`)
+                                 .join("&")}`
+                           )
+                        }
+                     >
                         Checkout <CreditCard className="ml-2" />
                      </button>
                   </SheetFooter>
