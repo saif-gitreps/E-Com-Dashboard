@@ -49,7 +49,7 @@ export function OrderInformation({
                      Price paid
                   </Text>
                   <Text className="mt-0 mr-4">
-                     {formatCurrency(order.pricePaidInCents)}
+                     {formatCurrency(order.pricePaidInCents / 100)}
                   </Text>
                </Column>
             </Row>

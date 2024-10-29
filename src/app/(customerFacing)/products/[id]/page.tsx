@@ -74,15 +74,28 @@ export default async function ProductViewPage({
                         Download now
                      </Button>
                   ) : (
-                     <>
-                        <AddToCartButton product={product} />
+                     <div className="flex items-center flex-col">
+                        <div className="flex space-x-1">
+                           <Button
+                              asChild
+                              size="lg"
+                              className="bg-green-700 text-white hover:bg-green-600"
+                              variant="secondary"
+                           >
+                              <Link href={`/products/checkout?pid=${product.id}`}>
+                                 Buy now
+                              </Link>
+                           </Button>
+                           <AddToCartButton product={product} />
+                        </div>
+
                         <Button asChild variant="link">
-                           <Link href="/products/checkout" className="text-sm">
-                              Taken into cart? Proceed to checkout{" "}
+                           <Link href="/products" className="text-sm">
+                              Browse more products
                               <CreditCard size={20} className="ml-2" />
                            </Link>
                         </Button>
-                     </>
+                     </div>
                   )}
                </CardFooter>
             </div>

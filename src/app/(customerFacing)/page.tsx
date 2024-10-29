@@ -14,11 +14,11 @@ const getMostPopularProducts = cache(
                _count: "desc", // we get the products that has the most amount of orders
             },
          },
-         take: 6,
+         take: 3,
       });
    },
    ["/", "getMostPopularProducts"],
-   { revalidate: 60 * 60 * 24 }
+   { revalidate: 60 * 5 }
 );
 
 const getNewestProducts = cache(
@@ -34,7 +34,7 @@ const getNewestProducts = cache(
       });
    },
    ["/", "getNewestProducts"],
-   { revalidate: 60 * 60 * 24 }
+   { revalidate: 60 * 5 }
 );
 
 export default function HomePage(): React.ReactNode {

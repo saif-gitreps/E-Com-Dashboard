@@ -19,10 +19,12 @@ import {
    useStripe,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 
-type CheckoutProduct = {
+export type ReviewProduct = {
    id: string;
    imagePath: string;
    name: string;
@@ -31,20 +33,30 @@ type CheckoutProduct = {
 };
 
 type CheckoutFormProps = {
-   products: CheckoutProduct[];
+   products: ReviewProduct[];
    clientSecret: string;
 };
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string);
 
 export default function CheckoutForm({ products, clientSecret }: CheckoutFormProps) {
-   const [finalProducts, setFinalProducts] = useState<CheckoutProduct[]>(products || []);
+   const [finalProducts, setFinalProducts] = useState<ReviewProduct[]>(products || []);
 
    return (
       <div className="max-w-5xl w-full m-auto space-y-8">
          <div className="border rounded-lg p-2 space-y-3">
+            {finalProducts.length === 0 && (
+               <h1 className="text-2xl text-center font-semibold my-10">
+                  Your cart is empty.
+                  {"  "}
+                  <Link href="/" className="text-gray-500 hover:underline">
+                     Browse products <ArrowRight size={20} className="inline" />
+                  </Link>
+               </h1>
+            )}
+
             {finalProducts.map((product) => (
-               <CartItems
+               <ProductReviewCard
                   key={product.id}
                   product={product}
                   onRemove={() =>
@@ -61,12 +73,12 @@ export default function CheckoutForm({ products, clientSecret }: CheckoutFormPro
    );
 }
 
-function CartItems({
+function ProductReviewCard({
    product,
    onRemove,
 }: {
-   product: CheckoutProduct;
-   onRemove: () => void;
+   product: ReviewProduct;
+   onRemove?: () => void;
 }) {
    return (
       <div className="flex flex-col sm:justify-between sm:flex-row sm:my-0 my-2">
@@ -100,7 +112,7 @@ function CartItems({
    );
 }
 
-function Form({ products }: { products: CheckoutProduct[] }) {
+function Form({ products }: { products: ReviewProduct[] }) {
    const stripe = useStripe();
    const elements = useElements();
    const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -182,7 +194,7 @@ function Form({ products }: { products: CheckoutProduct[] }) {
                >
                   {isLoading
                      ? "Processing..."
-                     : `Purchase - ${formatCurrency(priceInCents / 100)}`}
+                     : `Purchase for total of ${formatCurrency(priceInCents / 100)}`}
                </Button>
             </CardFooter>
          </Card>

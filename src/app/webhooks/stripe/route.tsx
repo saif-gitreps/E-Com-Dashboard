@@ -16,53 +16,70 @@ export async function POST(req: NextRequest) {
 
    if (event.type === "charge.succeeded") {
       const charge = event.data.object;
-      const productId = charge.metadata.productId;
+      const productIds = charge.metadata.productIds;
       const email = charge.billing_details.email;
       const pricePaidInCents = charge.amount;
 
-      const product = await db.product.findUnique({
-         where: { id: productId },
-      });
+      // const product = await db.product.findUnique({
+      //    where: { id: productId },
+      // });
 
-      if (product == null || email == null)
-         return new NextResponse("Bad request", { status: 400 });
-
-      const userField = {
-         email,
-         orders: {
-            create: {
-               productId,
-               pricePaidInCents,
+      const products = await db.product.findMany({
+         where: {
+            id: {
+               in: productIds.split(","),
             },
          },
-      };
+      });
 
-      const {
-         orders: [order],
-      } = await db.user.upsert({
+      if (products.length == 0 || email == null)
+         return new NextResponse("Bad request", { status: 400 });
+
+      // const userField = {
+      //    email,
+      //    password: "defaultPassword", // You should replace this with a secure password generation logic
+      //    orders: {
+      //       create: products.map((product) => ({
+      //          productId: product.id,
+      //          pricePaidInCents: product.priceInCents,
+      //       })),
+      //    },
+      // };
+
+      const { orders } = await db.user.update({
          where: { email },
-         create: userField,
-         update: userField,
-         select: { orders: { orderBy: { createdAt: "desc" }, take: 1 } },
-      });
-
-      const downloadVerification = await db.downloadVerification.create({
          data: {
-            productId,
-            expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            orders: {
+               create: products.map((product) => ({
+                  productId: product.id,
+                  pricePaidInCents: product.priceInCents,
+               })),
+            },
          },
+         select: { orders: { orderBy: { createdAt: "desc" } } },
       });
 
-      // need to replace this with a dyanmic email from different admins.
+      const downloadVerifications = await Promise.all(
+         orders.map((order) =>
+            db.downloadVerification.create({
+               data: {
+                  productId: order.productId,
+                  expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+               },
+            })
+         )
+      );
+
+      // TODO: need to replace this with a dyanmic email from different admins.
       await resend.emails.send({
          from: `Support <${process.env.SENDER_EMAIL as string}>`,
          to: [email],
          subject: "Order confirmation",
          react: (
             <PurchaseReceiptEmail
-               order={order}
-               product={product}
-               downloadVerificationId={downloadVerification.id}
+               orders={orders}
+               products={products}
+               downloadVerificationIds={downloadVerifications.map((dv) => dv.id)}
             />
          ),
       });
