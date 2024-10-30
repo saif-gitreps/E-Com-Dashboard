@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
+import { Trash2 } from "lucide-react";
 
 type ProductCartItemProps = {
    id: string;
@@ -32,27 +33,29 @@ export function ProductCartItem({
    const { removeItem } = useCart();
 
    return (
-      <Card className="flex overflow-hidden flex-col shadow-sm mt-4">
-         <div
-            className="relative w-full h-auto aspect-video hover:opacity-95  hover:cursor-pointer"
-            onClick={() => router.push(`/products/${id}`)}
-         >
-            <Image src={imagePath} alt={name} fill />
+      <Card className="flex overflow-hidden justify-between shadow-sm mt-2 h-20 p-1">
+         <div className="flex">
+            <div
+               className="relative aspect-video hover:opacity-75 hover:cursor-pointer"
+               onClick={() => router.push(`/products/${id}`)}
+            >
+               <Image src={imagePath} alt={name} fill />
+            </div>
+            <CardContent className="flex flex-col justify-between px-2 mt-1 py-0">
+               <CardTitle className="text-md">{name}</CardTitle>
+               <CardDescription>
+                  {priceInCents === 1 ? "Free" : formatCurrency(priceInCents / 100)}
+               </CardDescription>
+            </CardContent>
          </div>
-         <CardContent className="flex justify-between py-1 px-5 mt-1">
-            <CardTitle>{name}</CardTitle>
-            <CardDescription>
-               {priceInCents === 1 ? "Free" : formatCurrency(priceInCents / 100)}
-            </CardDescription>
-         </CardContent>
-         <CardFooter className="p-2">
+         <CardFooter className="p-0">
             <Button
-               size="lg"
-               className="w-full "
+               size="sm"
+               className="w-full px-2"
                variant="destructive"
                onClick={() => removeItem(id)}
             >
-               Remove
+               <Trash2 />
             </Button>
          </CardFooter>
       </Card>

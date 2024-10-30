@@ -22,7 +22,8 @@ export default function MyOrdersPage() {
             <CardHeader>
                <CardTitle>My Orders</CardTitle>
                <CardDescription>
-                  Enter your email address to view your orders.
+                  Enter your email address to view your orders. We send your download
+                  links to your email which has short expiry time for security reasons.
                </CardDescription>
             </CardHeader>
             <CardContent>

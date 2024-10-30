@@ -19,7 +19,7 @@ import {
    useStripe,
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
@@ -81,14 +81,14 @@ function ProductReviewCard({
    onRemove?: () => void;
 }) {
    return (
-      <div className="flex flex-col sm:justify-between sm:flex-row sm:my-0 my-2">
-         <div className="flex gap-10 w-5/6">
-            <div className="aspect-video flex-shrink-0 w-2/4 relative">
+      <div className="flex justify-between sm:my-0 my-2 p-2">
+         <div className="flex gap-10 w-5/6 sm:flex-row flex-col">
+            <div className="aspect-video flex-shrink-0 w-4/5 sm:w-2/5 relative">
                <Image
                   src={product.imagePath}
                   fill
                   alt={product.name}
-                  className="object-cover"
+                  className="object-contain"
                />
             </div>
             <div className="flex flex-col justify-between">
@@ -106,7 +106,7 @@ function ProductReviewCard({
             </div>
          </div>
          <Button variant="destructive" onClick={onRemove}>
-            Remove
+            <Trash2 />
          </Button>
       </div>
    );

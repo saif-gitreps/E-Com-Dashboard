@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ComponentProps, ReactNode } from "react";
-
-// TODO: refactor all nav components to sep files
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 
 export function Nav({
    children,
@@ -16,25 +16,41 @@ export function Nav({
 }) {
    return (
       <nav
-         className={`hidden sm:block bg-primary text-primary-foreground fixed inset-y-0 left-0 sm:w-32 md:w-56 sm:h-screen ${className}`}
+         className={cn(
+            "bg-primary text-primary-foreground fixed w-full top-0 z-50 pe-4",
+            className
+         )}
       >
-         <div className="flex flex-col h-full">{children}</div>
+         <div className="">{children}</div>
       </nav>
    );
 }
 
-export function MobileNav({
-   children,
-   className,
-}: {
-   children: ReactNode;
-   className?: string;
-}) {
+const navItems = [
+   { name: "Home", href: "/", isVisible: true },
+   { name: "Products", href: "/products", isVisible: true },
+   { name: "Sign In", href: "/sign-in", isVisible: true },
+];
+
+export function MobileNav() {
    return (
-      <nav
-         className={`sm:hidden bg-primary text-primary-foreground py-3 px-4 fixed top-0 z-50 w-full ${className}`}
-      >
-         <div className="flex flex-row justify-between">{children}</div>
+      <nav className="md:hidden flex items-center">
+         <Sheet>
+            <SheetTrigger className="text-xl md:hidden ">
+               <Menu size={40} />
+            </SheetTrigger>
+            <SheetContent side="left" className="max-w-40 flex flex-col p-0 md:hidden">
+               <div className="mt-10"></div>
+               {navItems.map(
+                  (item) =>
+                     item.isVisible && (
+                        <NavLink key={item.href} href={item.href}>
+                           {item.name}
+                        </NavLink>
+                     )
+               )}
+            </SheetContent>
+         </Sheet>
       </nav>
    );
 }
@@ -51,7 +67,6 @@ export function NavLink(props: Omit<ComponentProps<typeof Link>, "className">) {
       />
    );
 }
-
 type NavItemProps = {
    className?: string;
    [key: string]: any;
@@ -62,8 +77,7 @@ export function NavItem({ className, children, ...props }: NavItemProps) {
    return (
       <p
          {...props}
-         className={`p-4 hover:bg-secondary hover:cursor-pointer hover:text-secondary-foreground focus:bg-secondary focus:text-secondary-foreground 
-            ${className}`}
+         className={`p-4 hover:bg-secondary hover:cursor-pointer hover:text-secondary-foreground focus:bg-secondary focus:text-secondary-foreground ${className}`}
       >
          {children}
       </p>

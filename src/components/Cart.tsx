@@ -8,48 +8,50 @@ import {
    SheetTitle,
    SheetTrigger,
 } from "./ui/sheet";
-
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { useEffect, useState } from "react";
 import { ProductCartItem } from "./ProductCartItem";
 import { useCart } from "@/hooks/use-cart";
-import { NavItem } from "./Nav";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { formatCurrency } from "@/lib/formatter";
 
-const Cart = ({ isMobileView = false }: { isMobileView?: boolean }) => {
+export default function Cart() {
    const [isMounted, setIsMounted] = useState<boolean>(false);
+   const [isOpen, setIsOpen] = useState<boolean>(false);
 
    const router = useRouter();
-
-   useEffect(() => setIsMounted(true), []);
-
    const { items } = useCart();
    const itemCount = items?.length;
 
-   return (
-      <Sheet>
-         <SheetTrigger
-            className={`${isMobileView && "text-xl relative"} hover:cursor-pointer`}
-            asChild={!isMobileView}
-         >
-            {!isMobileView ? (
-               <NavItem>
-                  Cart (
-                  {isMounted ? itemCount : <Loader2 className="animate-spin sm:hidden" />}
-                  )
-               </NavItem>
-            ) : (
-               <>
-                  <ShoppingCart size={40} />
+   useEffect(() => setIsMounted(true), []);
 
-                  <p className="sm:hidden absolute top-3 right-2.5 text-xs">
-                     {isMounted ? (
-                        itemCount
-                     ) : (
-                        <Loader2 className="animate-spin sm:hidden" />
-                     )}
-                  </p>
+   const pathname = usePathname();
+
+   const handleCheckout = () => {
+      router.push(
+         `/products/checkout?${items.map((item) => `pid=${item.product.id}`).join("&")}`
+      );
+      setIsOpen(false);
+   };
+
+   return (
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+         <SheetTrigger
+            className={`hover:cursor-pointer ${
+               pathname === "/products/checkout" && "hidden"
+            }`}
+         >
+            {isMounted ? (
+               <>
+                  <ShoppingCart size={32} className="hover:opacity-75" />
+                  <div className="relative">
+                     <p className="absolute bottom-5 left-2.5 text-red-400">
+                        {itemCount}
+                     </p>
+                  </div>
                </>
+            ) : (
+               <Loader2 className="animate-spin" />
             )}
          </SheetTrigger>
          <SheetContent side="right" className="max-w-72 flex flex-col h-full">
@@ -69,19 +71,19 @@ const Cart = ({ isMobileView = false }: { isMobileView?: boolean }) => {
                      <ScrollBar orientation="vertical" />
                   </ScrollArea>
 
-                  <SheetFooter>
-                     {/* TODO: close the cart when checkout page is loaded */}
+                  <h2 className="font-semibold text-center border-t">
+                     Sub-total:{" "}
+                     {formatCurrency(
+                        items.reduce((acc, item) => acc + item.product.priceInCents, 0) /
+                           100
+                     )}
+                  </h2>
+                  <SheetFooter className="pt-0 mt-0">
                      <button
-                        className="w-full bg-green-700 text-white hover:bg-green-600 p-2 rounded-md flex justify-center"
-                        onClick={() =>
-                           router.push(
-                              `/products/checkout?${items
-                                 .map((item) => `pid=${item.product.id}`)
-                                 .join("&")}`
-                           )
-                        }
+                        className="w-full bg-green-700 text-white hover:bg-green-600 p-2 rounded-md flex justify-center items-center"
+                        onClick={handleCheckout}
                      >
-                        Checkout <CreditCard className="ml-2" />
+                        To checkout <CreditCard className="ml-2" />
                      </button>
                   </SheetFooter>
                </>
@@ -89,6 +91,4 @@ const Cart = ({ isMobileView = false }: { isMobileView?: boolean }) => {
          </SheetContent>
       </Sheet>
    );
-};
-
-export default Cart;
+}
