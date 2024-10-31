@@ -11,6 +11,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { Product } from "@prisma/client";
 import Image from "next/image";
 import { getCurrentUserFromSession } from "@/app/(auth)/_actions/auth";
+import SpinLoader from "@/components/SpinLoader";
 
 export function ProductForm({ product }: { product?: Product | null }) {
    const [error, action] = useFormState(
@@ -130,7 +131,7 @@ function SubmitButton() {
    const { pending } = useFormStatus();
    return (
       <Button type="submit" disabled={pending}>
-         {pending ? "saving.." : "save"}
+         {pending ? <SpinLoader>Saving..</SpinLoader> : "save"}
       </Button>
    );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { emailOrderHistory } from "@/actions/orders";
+import SpinLoader from "@/components/SpinLoader";
 import { Button } from "@/components/ui/button";
 import {
    Card,
@@ -46,7 +47,7 @@ function SubmitButton() {
 
    return (
       <Button className="w-full" size="lg" disabled={pending} type="submit">
-         {pending ? "Sending.." : "Send"}
+         {pending ? <SpinLoader>Sending..</SpinLoader> : "Send"}
       </Button>
    );
 }

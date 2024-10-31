@@ -48,7 +48,7 @@ export function ProductCartItem({
                </CardDescription>
             </CardContent>
          </div>
-         <CardFooter className="p-0">
+         <CardFooter className="p-0 flex items-start">
             <Button
                size="sm"
                className="w-full px-2"

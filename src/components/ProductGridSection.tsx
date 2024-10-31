@@ -7,7 +7,7 @@ import { Product } from "@prisma/client";
 
 type ProductGridSectionProps = {
    title: string;
-   productsFetcher: () => Promise<Product[]>;
+   productsFetcher: (product?: Product | null) => Promise<Product[]>;
 };
 
 export default function ProductGridSection({
@@ -46,7 +46,7 @@ export default function ProductGridSection({
 export async function ProductSuspense({
    productsFetcher,
 }: {
-   productsFetcher: () => Promise<Product[]>;
+   productsFetcher: (product?: Product) => Promise<Product[]>;
 }) {
    return (await productsFetcher()).map((product) => (
       <ProductCard key={product.id} product={product} />

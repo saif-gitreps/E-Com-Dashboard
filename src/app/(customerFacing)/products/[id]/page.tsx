@@ -1,6 +1,8 @@
 import AddToCartButton from "@/components/AddToCartButton";
 import { PageHeader } from "@/components/PageHeader";
 import ProductGridSection from "@/components/ProductGridSection";
+import { ProductReviewSkeleton } from "@/components/ProductReview";
+import ProductReviewSection from "@/components/ProductReviewSection";
 import { Button } from "@/components/ui/button";
 import {
    Card,
@@ -14,22 +16,42 @@ import db from "@/db/db";
 import { cache } from "@/lib/cache";
 import { formatCurrency } from "@/lib/formatter";
 import { Product } from "@prisma/client";
-import { CreditCard } from "lucide-react";
+import { PackageSearch, Star } from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const getRelatedProducts = cache(
-   (): Promise<Product[]> => {
+   (product?: Product | null): Promise<Product[]> => {
+      if (!product) return Promise.resolve([]);
+
       return db.product.findMany({
          where: {
             isAvailableForPurchase: true,
+            OR: [
+               {
+                  category: {
+                     equals: product.category,
+                  },
+               },
+               {
+                  name: {
+                     in: product.name.split(" ").map((name) => name.toLowerCase()),
+                  },
+               },
+            ],
+            NOT: {
+               id: product.id,
+            },
+         },
+         orderBy: {
+            createdAt: "desc",
          },
          take: 3,
       });
    },
-   ["/", "getNewestProducts"],
+   ["/", "getRelatedProducts"],
    { revalidate: 60 * 60 * 24 }
 );
 
@@ -38,22 +60,39 @@ export default async function ProductViewPage({
 }: {
    params: { id: string };
 }) {
-   const product = await db.product.findUnique({ where: { id } });
+   const product = await db.product.findUnique({
+      where: { id },
+      include: {
+         productReviews: {
+            select: { rating: true },
+         },
+      },
+   });
 
    if (product === null) return notFound();
 
-   return (
-      <div>
-         <PageHeader>{product.name}</PageHeader>
+   const averageRating = (
+      product.productReviews.reduce((acc, review) => acc + review.rating, 0) /
+      product.productReviews.length
+   ).toPrecision(2);
 
-         <Card className="flex overflow-hidden justify-between flex-row shadow-sm mb-20">
+   return (
+      <div className="space-y-10">
+         <Card className="flex sm:flex-row flex-col overflow-hidden justify-between shadow-sm">
             <div className="relative w-3/5 h-auto aspect-video">
                <Image src={product.imagePath} alt={product.name} fill />
             </div>
             <div className="flex flex-col w-2/5">
                <div className="mb-auto">
                   <CardHeader>
-                     <CardTitle>{product.name}</CardTitle>
+                     <CardTitle className="flex space-x-2">
+                        <div>{product.name}</div>
+
+                        <div className="space-x-2 flex">
+                           <Star className="fill-yellow-500" />
+                           {averageRating}
+                        </div>
+                     </CardTitle>
                      <CardDescription>
                         {product.priceInCents === 1
                            ? "Free"
@@ -92,7 +131,7 @@ export default async function ProductViewPage({
                         <Button asChild variant="link">
                            <Link href="/products" className="text-sm">
                               Browse more products
-                              <CreditCard size={20} className="ml-2" />
+                              <PackageSearch size={20} className="ml-2" />
                            </Link>
                         </Button>
                      </div>
@@ -101,9 +140,11 @@ export default async function ProductViewPage({
             </div>
          </Card>
 
+         <ProductReviewSection product={product} />
+
          <ProductGridSection
             title="Related products"
-            productsFetcher={getRelatedProducts}
+            productsFetcher={getRelatedProducts.bind(null, product)}
          />
       </div>
    );

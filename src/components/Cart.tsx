@@ -1,13 +1,6 @@
 "use client";
 import { CreditCard, Loader2, ShoppingCart } from "lucide-react";
-import {
-   Sheet,
-   SheetContent,
-   SheetFooter,
-   SheetHeader,
-   SheetTitle,
-   SheetTrigger,
-} from "./ui/sheet";
+import { Sheet, SheetContent, SheetFooter, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { useEffect, useState } from "react";
 import { ProductCartItem } from "./ProductCartItem";
@@ -71,13 +64,13 @@ export default function Cart() {
                      <ScrollBar orientation="vertical" />
                   </ScrollArea>
 
-                  <h2 className="font-semibold text-center border-t">
+                  <div className="font-semibold text-center border-t">
                      Sub-total:{" "}
                      {formatCurrency(
                         items.reduce((acc, item) => acc + item.product.priceInCents, 0) /
                            100
                      )}
-                  </h2>
+                  </div>
                   <SheetFooter className="pt-0 mt-0">
                      <button
                         className="w-full bg-green-700 text-white hover:bg-green-600 p-2 rounded-md flex justify-center items-center"

@@ -17,11 +17,11 @@ export function Nav({
    return (
       <nav
          className={cn(
-            "bg-primary text-primary-foreground fixed w-full top-0 z-50 pe-4",
+            "bg-primary text-primary-foreground fixed w-full top-0 z-50",
             className
          )}
       >
-         <div className="">{children}</div>
+         <div className="max-w-7xl mx-auto">{children}</div>
       </nav>
    );
 }

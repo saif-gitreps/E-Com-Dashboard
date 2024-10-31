@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 import { CircleUser } from "lucide-react";
 import { cookies } from "next/headers";
 import { decrypt } from "@/lib/session";
-import { MobileNav, Nav, NavItem, NavLink } from "@/components/Nav";
+import { MobileNav, Nav, NavLink } from "@/components/Nav";
 import { ReactNode } from "react";
 import {
    DropdownMenu,
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { logout } from "../(auth)/_actions/auth";
+import LogoutButton from "./_components/LogoutButton";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
    const cookie = cookies().get("session")?.value;
@@ -68,11 +69,8 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
                                  <Link href="/admin">Sales Dashboard</Link>
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                 className="text-destructive"
-                                 onClick={logout}
-                              >
-                                 {isAuthenticated && "Logout"}
+                              <DropdownMenuItem className="text-destructive">
+                                 <LogoutButton isAuthenticated />
                               </DropdownMenuItem>
                            </DropdownMenuContent>
                         </DropdownMenu>

@@ -42,8 +42,6 @@ export async function addProducts(prevState: unknown, formData: FormData) {
 
    const userData = await getCurrentUserFromSession();
 
-   console.log(userData);
-
    if (!userData?.userId) {
       return redirect("/sign-in");
    }
@@ -65,6 +63,7 @@ export async function addProducts(prevState: unknown, formData: FormData) {
 
    // any changes done by the admin will revalidate the cache.
    revalidatePath("/products");
+
    revalidatePath("/");
 
    redirect("/admin/products");
