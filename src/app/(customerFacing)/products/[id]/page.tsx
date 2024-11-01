@@ -1,8 +1,4 @@
-import AddToCartButton from "@/components/AddToCartButton";
-import { PageHeader } from "@/components/PageHeader";
 import ProductGridSection from "@/components/ProductGridSection";
-import { ProductReviewSkeleton } from "@/components/ProductReview";
-import ProductReviewSection from "@/components/ProductReviewSection";
 import { Button } from "@/components/ui/button";
 import {
    Card,
@@ -21,6 +17,8 @@ import { PackageSearch, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AddToCartButton from "../../_components/AddToCartButton";
+import ProductReviewSection from "../../_components/ProductReviewSection";
 
 const getRelatedProducts = cache(
    (product?: Product | null): Promise<Product[]> => {

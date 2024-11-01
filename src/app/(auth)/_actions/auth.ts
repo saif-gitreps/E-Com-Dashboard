@@ -20,8 +20,8 @@ export type TAuthFormData = z.infer<typeof authSchema>;
 
 export type AuthState = {
    fieldErrors?: {
-      email?: string[];
-      password?: string[];
+      email?: string[] | string;
+      password?: string[] | string;
    };
    error?: string;
 };
@@ -99,6 +99,111 @@ export async function signUp(prevState: AuthState, formData: FormData) {
 export async function logout() {
    await deleteSession();
    // redirect("/sign-in");
+}
+
+const updateSchema = z.object({
+   email: z.string().email({ message: "Invalid email address" }).trim().optional(),
+   oldEmail: z.string().email({ message: "Invalid email address" }).trim(),
+   password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" })
+      .trim()
+      .optional(),
+   newPassword: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" })
+      .trim()
+      .optional(),
+});
+
+export type UpdateState = {
+   fieldErrors?: {
+      email?: string[];
+      password?: string[];
+      newPassword?: string[];
+      oldEmail?: string[];
+   };
+   error?: string;
+   success?: boolean;
+};
+
+export async function updateUserDetails(
+   prevState: UpdateState,
+   formData: FormData
+): Promise<UpdateState> {
+   const result = updateSchema.safeParse(Object.fromEntries(formData));
+
+   if (!result.success) {
+      return {
+         fieldErrors: result.error.flatten().fieldErrors,
+      };
+   }
+
+   const { email, password, newPassword } = result.data;
+   const user = await db.user.findFirst({
+      where: {
+         email: result.data.oldEmail,
+      },
+   });
+
+   if (!user) {
+      redirect("/sign-in");
+   }
+
+   try {
+      if (email !== user.email) {
+         const userWithNewEmail = await db.user.findFirst({
+            where: {
+               email,
+            },
+         });
+
+         if (userWithNewEmail) {
+            return {
+               error: "Account with the same email already exists",
+            };
+         } else {
+            await db.user.update({
+               where: {
+                  id: user.id,
+               },
+               data: {
+                  email,
+               },
+            });
+         }
+      }
+
+      if (newPassword && !password) {
+         return {
+            error: "Please enter old password",
+         };
+      }
+
+      if (password && newPassword) {
+         if (!(await bcrypt.compare(password, user.password))) {
+            return {
+               error: "Invalid old password",
+            };
+         }
+         await db.user.update({
+            where: {
+               id: user.id,
+            },
+            data: {
+               password: await bcrypt.hash(newPassword, 10),
+            },
+         });
+      }
+
+      return {
+         success: true,
+      };
+   } catch (error) {
+      return {
+         error: "An error occurred while updating user details",
+      };
+   }
 }
 
 export async function getCurrentUserFromSession(): Promise<JWTPayload | null> {

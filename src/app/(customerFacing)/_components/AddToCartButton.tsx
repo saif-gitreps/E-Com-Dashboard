@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
+
 import { useCart } from "@/hooks/use-cart";
 import { Product } from "@prisma/client";
+import { Button } from "@/components/ui/button";
 
 const AddToCartButton = ({ product }: { product: Product }) => {
    const [isSuccess, setIsSuccess] = useState<boolean>(false);

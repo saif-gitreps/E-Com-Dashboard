@@ -1,10 +1,11 @@
 "use client";
 
 import { PageHeader } from "@/components/PageHeader";
-import { SignInForm } from "./_components/SignInForm";
+
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { SignInForm } from "../_components/SignInForm";
 
 export default function SignIn() {
    const searchParams = useSearchParams();
@@ -24,6 +25,7 @@ export default function SignIn() {
                Create a new account
             </Link>
          </p>
+
          <SignInForm />
 
          <p className="text-center">

@@ -1,6 +1,11 @@
 "use client";
 
 import { formatCurrency } from "@/lib/formatter";
+
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCart } from "@/hooks/use-cart";
+import { Trash2 } from "lucide-react";
 import {
    Card,
    CardContent,
@@ -8,12 +13,8 @@ import {
    CardFooter,
    CardHeader,
    CardTitle,
-} from "./ui/card";
-import { Button } from "./ui/button";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCart } from "@/hooks/use-cart";
-import { Trash2 } from "lucide-react";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 type ProductCartItemProps = {
    id: string;

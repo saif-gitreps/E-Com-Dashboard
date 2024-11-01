@@ -1,15 +1,8 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFormState, useFormStatus } from "react-dom";
-import SpinLoader from "@/components/SpinLoader";
-import { AuthState, signUp } from "../../_actions/auth";
+import SubmitButton from "../../../components/SubmitButton";
 
-export function SignUpForm() {
-   const [state, action] = useFormState<AuthState, FormData>(signUp, {});
-
+export default function UserForm({ state, action }: { state: any; action: any }) {
    return (
       <form className="space-y-4 max-w-xl mx-auto" action={action}>
          <div className="space-y-2">
@@ -30,16 +23,7 @@ export function SignUpForm() {
 
          {state.error && <div className="text-destructive">{state.error}</div>}
 
-         <SubmitButton />
+         <SubmitButton beforeLoading="Submit" whileLoading="Please wait.." key="auth" />
       </form>
-   );
-}
-
-function SubmitButton() {
-   const { pending } = useFormStatus();
-   return (
-      <Button type="submit" disabled={pending} className="w-full">
-         {pending ? <SpinLoader>Please wait..</SpinLoader> : "Sign un"}
-      </Button>
    );
 }

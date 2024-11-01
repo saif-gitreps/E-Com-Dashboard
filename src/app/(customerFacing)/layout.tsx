@@ -1,4 +1,4 @@
-import Cart from "@/components/Cart";
+import Cart from "@/app/(customerFacing)/_components/Cart";
 import SearchBar from "@/components/SearchBar";
 export const dynamic = "force-dynamic";
 
@@ -15,7 +15,6 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { logout } from "../(auth)/_actions/auth";
 import LogoutButton from "./_components/LogoutButton";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
@@ -56,9 +55,8 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
                         <DropdownMenu>
                            <DropdownMenuTrigger>
                               <CircleUser size={32} className="hover:opacity-75" />
-                              <span className="sr-only"></span>
                            </DropdownMenuTrigger>
-                           <DropdownMenuContent>
+                           <DropdownMenuContent className="w-48">
                               <DropdownMenuItem asChild>
                                  <Link href="/profile">Profile</Link>
                               </DropdownMenuItem>

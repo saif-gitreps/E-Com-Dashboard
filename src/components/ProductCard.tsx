@@ -13,9 +13,8 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Product } from "@prisma/client";
-import AddToCartButton from "./AddToCartButton";
 import Link from "next/link";
-import { ArrowBigRight, ArrowBigRightDash } from "lucide-react";
+import AddToCartButton from "@/app/(customerFacing)/_components/AddToCartButton";
 
 type ProductCardProps = {
    product: Product;

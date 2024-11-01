@@ -1,7 +1,13 @@
 "use client";
 import { CreditCard, Loader2, ShoppingCart } from "lucide-react";
-import { Sheet, SheetContent, SheetFooter, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
+import {
+   Sheet,
+   SheetContent,
+   SheetFooter,
+   SheetTitle,
+   SheetTrigger,
+} from "../../../components/ui/sheet";
+import { ScrollArea, ScrollBar } from "../../../components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import { ProductCartItem } from "./ProductCartItem";
 import { useCart } from "@/hooks/use-cart";

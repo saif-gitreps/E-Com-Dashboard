@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import ProductReviewComp, {
    ProductReviewCompProps,
    ProductReviewSkeleton,
-} from "./ProductReview";
+} from "../app/(customerFacing)/_components/ProductReview";
 import ProductReviewForm from "./ProductReviewForm";
 import { cache } from "@/lib/cache";
 

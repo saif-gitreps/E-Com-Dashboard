@@ -44,6 +44,7 @@ const protectedRoutes = [
    // "/admin:path", TODO: activate it again.
    // "/products/:id/purchase" <- will be depreciated , new one will be products/checkout,
    "/products/download/:downloadVerificationId",
+   "/profile",
 ];
 const publicRoutes = ["/sign-up", "/sign-in"];
 

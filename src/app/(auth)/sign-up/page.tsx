@@ -1,5 +1,5 @@
 import { PageHeader } from "@/components/PageHeader";
-import { SignUpForm } from "./_components/SignUpForm";
+import { SignUpForm } from "../_components/SignUpForm";
 import Link from "next/link";
 
 export default function SignUp() {
