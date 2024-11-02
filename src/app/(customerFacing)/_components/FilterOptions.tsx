@@ -8,8 +8,13 @@ import {
    SelectTrigger,
    SelectValue,
 } from "@/components/ui/select";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function FilterOptions() {
+   const router = useRouter();
+
+   const searchParams = useSearchParams();
+
    const categories = [
       "All",
       "icons",
@@ -26,12 +31,29 @@ export default function FilterOptions() {
       "softwares",
    ];
 
+   const updateFilter = (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (value === "All") {
+         params.delete(name);
+      } else {
+         params.set(name, value);
+      }
+
+      params.delete("page");
+
+      router.push(`?${params.toString()}`);
+   };
+
    return (
       <div className="flex flex-col sm:flex-row space-x-2">
          <div className="grid grid-cols-2 sm:flex sm:justify-evenly sm:items-center gap-4 border p-4 rounded">
             <div className="flex flex-col space-y-2">
-               <Label>Catergory:</Label>
-               <Select defaultValue="All" name="category">
+               <Label>Category:</Label>
+               <Select
+                  value={searchParams.get("category") || "All"}
+                  onValueChange={(value) => updateFilter("category", value)}
+               >
                   <SelectTrigger className="w-full">
                      <SelectValue placeholder="Category" />
                   </SelectTrigger>
@@ -45,9 +67,12 @@ export default function FilterOptions() {
                </Select>
             </div>
 
-            <div className="flex flex-col  space-y-2">
+            <div className="flex flex-col space-y-2">
                <Label>Price:</Label>
-               <Select defaultValue="desc" name="orderByPrice">
+               <Select
+                  value={searchParams.get("orderByPrice") || "desc"}
+                  onValueChange={(value) => updateFilter("orderByPrice", value)}
+               >
                   <SelectTrigger className="w-full">
                      <SelectValue placeholder="Order by price" />
                   </SelectTrigger>
@@ -60,7 +85,10 @@ export default function FilterOptions() {
 
             <div className="flex flex-col space-y-2">
                <Label>Rating:</Label>
-               <Select defaultValue="desc" name="orderByRating">
+               <Select
+                  value={searchParams.get("orderByRating") || "desc"}
+                  onValueChange={(value) => updateFilter("orderByRating", value)}
+               >
                   <SelectTrigger className="w-full">
                      <SelectValue placeholder="Order by rating" />
                   </SelectTrigger>
@@ -73,7 +101,10 @@ export default function FilterOptions() {
 
             <div className="flex flex-col space-y-2">
                <Label>Date:</Label>
-               <Select defaultValue="desc" name="orderByDate">
+               <Select
+                  value={searchParams.get("orderByDate") || "desc"}
+                  onValueChange={(value) => updateFilter("orderByDate", value)}
+               >
                   <SelectTrigger className="w-full">
                      <SelectValue placeholder="Order by date" />
                   </SelectTrigger>
@@ -86,7 +117,10 @@ export default function FilterOptions() {
 
             <div className="flex flex-col space-y-2">
                <Label>Sales:</Label>
-               <Select defaultValue="desc" name="orderBySales">
+               <Select
+                  value={searchParams.get("orderBySales") || "desc"}
+                  onValueChange={(value) => updateFilter("orderBySales", value)}
+               >
                   <SelectTrigger className="w-full">
                      <SelectValue placeholder="Order by prod. sold" />
                   </SelectTrigger>
