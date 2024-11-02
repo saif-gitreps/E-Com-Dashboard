@@ -12,6 +12,13 @@ import { Product } from "@prisma/client";
 import Image from "next/image";
 import { getCurrentUserFromSession } from "@/app/(auth)/_actions/auth";
 import SpinLoader from "@/components/SpinLoader";
+import {
+   Select,
+   SelectContent,
+   SelectItem,
+   SelectTrigger,
+   SelectValue,
+} from "@/components/ui/select";
 
 export function ProductForm({ product }: { product?: Product | null }) {
    const [error, action] = useFormState(
@@ -22,6 +29,21 @@ export function ProductForm({ product }: { product?: Product | null }) {
    const [priceInCents, setPriceInCents] = useState<number | undefined>(
       product?.priceInCents
    );
+
+   const categories = [
+      "icons",
+      "themes",
+      "fonts",
+      "logos",
+      "photos",
+      "web-templates",
+      "digtal-arts",
+      "books",
+      "study-materials",
+      "pdf",
+      "games",
+      "softwares",
+   ];
 
    return (
       <form className="space-y-8" action={action}>
@@ -77,13 +99,18 @@ export function ProductForm({ product }: { product?: Product | null }) {
 
          <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
-            <Input
-               type="text"
-               id="catergory"
-               name="category"
-               required
-               defaultValue={product?.category}
-            />
+            <Select defaultValue={product?.category} name="category" required>
+               <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category" />
+               </SelectTrigger>
+               <SelectContent>
+                  {categories.map((category) => (
+                     <SelectItem key={category} value={category}>
+                        {category}
+                     </SelectItem>
+                  ))}
+               </SelectContent>
+            </Select>
 
             {error.category && <div className="text-destructive">{error.category}</div>}
          </div>

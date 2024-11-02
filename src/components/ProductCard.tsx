@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { Product } from "@prisma/client";
 import Link from "next/link";
 import AddToCartButton from "@/app/(customerFacing)/_components/AddToCartButton";
+import { Download } from "lucide-react";
 
 type ProductCardProps = {
    product: Product;
@@ -48,11 +49,11 @@ export function ProductCard({ product }: ProductCardProps) {
                   size="lg"
                   className="w-full bg-green-700 text-white hover:bg-green-600"
                >
-                  Download now
+                  Download now <Download size={18} className="ml-1" />
                </Button>
             ) : (
                <div className="flex w-full gap-1">
-                  <Button size="lg" variant="outline" asChild>
+                  <Button size="lg" variant="outline" asChild className="w-1/3">
                      <Link href={`/products/${id}`}>View</Link>
                   </Button>
                   <AddToCartButton product={product} />

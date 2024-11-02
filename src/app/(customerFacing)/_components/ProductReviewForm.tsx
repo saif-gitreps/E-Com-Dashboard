@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Textarea } from "./ui/textarea";
 import { Star } from "lucide-react";
-import { Button } from "./ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { addReview } from "@/actions/review";
-import SpinLoader from "./SpinLoader";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import SpinLoader from "@/components/SpinLoader";
 
 export default function ProductReviewForm({ productId }: { productId: string }) {
    const [rating, setRating] = useState(0);
@@ -23,7 +23,7 @@ export default function ProductReviewForm({ productId }: { productId: string }) 
    return (
       <div className="mt-5 space-y-4 border p-3 rounded">
          <h2 className="text-lg font-medium">
-            Bought the product? Drop a review and rate it!
+            Got the product? Drop a review and rate it!
          </h2>
          <form action={action} className="flex flex-col gap-4" ref={formRef}>
             <div className="space-y-2">

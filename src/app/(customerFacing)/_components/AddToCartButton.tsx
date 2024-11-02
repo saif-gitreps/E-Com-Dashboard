@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { Product } from "@prisma/client";
 import { Button } from "@/components/ui/button";
+import { CheckCircle, ShoppingCart } from "lucide-react";
 
 const AddToCartButton = ({ product }: { product: Product }) => {
    const [isSuccess, setIsSuccess] = useState<boolean>(false);
@@ -31,11 +32,19 @@ const AddToCartButton = ({ product }: { product: Product }) => {
          disabled={isProductInCart}
          variant={isProductInCart ? "secondary" : "default"}
       >
-         {isSuccess
-            ? "Already in cart!"
-            : isProductInCart
-            ? "Already in cart!"
-            : "Add to cart!"}
+         {isSuccess ? (
+            <>
+               In cart <CheckCircle size={18} className="ml-1 fill-green-500" />
+            </>
+         ) : isProductInCart ? (
+            <>
+               In cart <CheckCircle size={18} className="ml-1 fill-green-500" />
+            </>
+         ) : (
+            <>
+               Add to cart <ShoppingCart size={18} className="ml-1" />
+            </>
+         )}
       </Button>
    );
 };

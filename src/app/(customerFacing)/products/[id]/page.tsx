@@ -19,6 +19,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddToCartButton from "../../_components/AddToCartButton";
 import ProductReviewSection from "../../_components/ProductReviewSection";
+import getAverageRating from "@/lib/get-average-rating";
 
 const getRelatedProducts = cache(
    (product?: Product | null): Promise<Product[]> => {
@@ -69,10 +70,7 @@ export default async function ProductViewPage({
 
    if (product === null) return notFound();
 
-   const averageRating = (
-      product.productReviews.reduce((acc, review) => acc + review.rating, 0) /
-      product.productReviews.length
-   ).toPrecision(2);
+   const averageRating = getAverageRating(product.productReviews);
 
    return (
       <div className="space-y-10">
@@ -125,15 +123,14 @@ export default async function ProductViewPage({
                            </Button>
                            <AddToCartButton product={product} />
                         </div>
-
-                        <Button asChild variant="link">
-                           <Link href="/products" className="text-sm">
-                              Browse more products
-                              <PackageSearch size={20} className="ml-2" />
-                           </Link>
-                        </Button>
                      </div>
                   )}
+                  <Button asChild variant="link">
+                     <Link href="/products" className="text-sm">
+                        Browse more products
+                        <PackageSearch size={20} className="ml-2" />
+                     </Link>
+                  </Button>
                </CardFooter>
             </div>
          </Card>

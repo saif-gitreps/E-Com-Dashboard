@@ -1,12 +1,12 @@
 import db from "@/db/db";
 import { Product } from "@prisma/client";
 import { Suspense } from "react";
+import { cache } from "@/lib/cache";
 import ProductReviewComp, {
    ProductReviewCompProps,
    ProductReviewSkeleton,
-} from "../app/(customerFacing)/_components/ProductReview";
+} from "./ProductReview";
 import ProductReviewForm from "./ProductReviewForm";
-import { cache } from "@/lib/cache";
 
 type ProductReviewSectionProps = {
    product: Product;
