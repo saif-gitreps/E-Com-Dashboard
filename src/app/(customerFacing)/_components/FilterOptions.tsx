@@ -70,7 +70,7 @@ export default function FilterOptions() {
             <div className="flex flex-col space-y-2">
                <Label>Price:</Label>
                <Select
-                  value={searchParams.get("orderByPrice") || "desc"}
+                  value={searchParams.get("orderByPrice") || "asc"}
                   onValueChange={(value) => updateFilter("orderByPrice", value)}
                >
                   <SelectTrigger className="w-full">

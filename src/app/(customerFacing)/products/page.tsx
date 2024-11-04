@@ -5,23 +5,37 @@ import { Product } from "@prisma/client";
 import { Suspense } from "react";
 import FilterOptions from "../_components/FilterOptions";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/PageHeader";
 
 const ITEMS_PER_PAGE = 3;
 
+type SearchParams = {
+   category?: string;
+   page?: string;
+   orderByPrice?: string;
+   orderByRating?: string;
+   orderByDate?: string;
+   orderBySales?: string;
+   searchQuery?: string;
+};
+
 const getProducts = cache(
-   async (searchParams: {
-      category?: string;
-      page?: string;
-      orderByPrice?: string;
-      orderByRating?: string;
-      orderByDate?: string;
-      orderBySales?: string;
-   }): Promise<{ products: Product[]; total: number }> => {
+   async (
+      searchParams: SearchParams
+   ): Promise<{ products: Product[]; total: number }> => {
       const page = Number(searchParams.page) || 1;
       const skip = (page - 1) * ITEMS_PER_PAGE;
 
       const where: any = {
          isAvailableForPurchase: true,
+         name: {
+            contains: searchParams.searchQuery,
+            mode: "insensitive",
+         },
+         category: {
+            contains: searchParams.category,
+            mode: "insensitive",
+         },
       };
 
       if (searchParams.category && searchParams.category !== "All") {
@@ -41,11 +55,24 @@ const getProducts = cache(
       // TODO: Compelte the orderbyRating and orderBysales logic.
 
       // if (searchParams.orderByRating) {
-      //    orderBy.push({ rating: searchParams.orderByRating });
+      //    orderBy.push({
+      //       productReviews: {
+      //          _avg: {
+      //             rating: searchParams.orderByRating,
+      //          },
+      //       },
+      //    });
       // }
 
+      // // For the orders/sales ordering, you'll need to use _count with specific syntax
       // if (searchParams.orderBySales) {
-      //    orderBy.push({ totalSales: searchParams.orderBySales });
+      //    orderBy.push({
+      //       orders: {
+      //          _count: {
+      //             _all: searchParams.orderBySales,
+      //          },
+      //       },
+      //    });
       // }
 
       if (orderBy.length === 0) {
@@ -54,13 +81,51 @@ const getProducts = cache(
 
       const [products, total] = await Promise.all([
          db.product.findMany({
-            where,
+            where: {
+               isAvailableForPurchase: true,
+               OR: [
+                  { name: { contains: searchParams.searchQuery, mode: "insensitive" } },
+                  {
+                     description: {
+                        contains: searchParams.searchQuery,
+                        mode: "insensitive",
+                     },
+                  },
+               ],
+            },
+            include: {
+               productReviews: {
+                  select: {
+                     rating: true,
+                  },
+               },
+               orders: {
+                  select: {
+                     id: true,
+                  },
+               },
+            },
             orderBy,
             take: ITEMS_PER_PAGE,
             skip,
+            // select: {
+            //    id: true,
+            //    name: true,
+            //    priceInCents: true,
+            //    description: true,
+            //    category: true,
+            //    isAvailableForPurchase: true,
+            //    createdAt: true,
+            //    updatedAt: true,
+            //    userId: true,
+            //    filePath: true,
+            //    imagePath: true,
+            // },
          }),
          db.product.count({ where }),
       ]);
+
+      console.log(products);
 
       return { products, total };
    },
@@ -70,7 +135,7 @@ const getProducts = cache(
    }
 );
 
-type PageProps = {
+type ProductPageProps = {
    searchParams: {
       category?: string;
       page?: string;
@@ -78,12 +143,20 @@ type PageProps = {
       orderByRating?: string;
       orderByDate?: string;
       orderBySales?: string;
+      searchQuery?: string;
    };
 };
 
-export default function ProductPage({ searchParams }: PageProps) {
+export default function ProductPage({ searchParams }: ProductPageProps) {
    return (
       <div className="space-y-4">
+         {searchParams.searchQuery && (
+            <PageHeader className="text-center">
+               Search results for:{" "}
+               <span className="italic font-semibold">{searchParams.searchQuery}</span>
+            </PageHeader>
+         )}
+
          <FilterOptions />
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Suspense
@@ -105,7 +178,7 @@ export default function ProductPage({ searchParams }: PageProps) {
    );
 }
 
-async function ProductsSuspense({ searchParams }: PageProps) {
+async function ProductsSuspense({ searchParams }: ProductPageProps) {
    const { products, total } = await getProducts(searchParams);
    const currentPage = Number(searchParams.page) || 1;
    const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
@@ -116,8 +189,9 @@ async function ProductsSuspense({ searchParams }: PageProps) {
             <ProductCard key={product.id} product={product} />
          ))}
 
-         {/* Pagination Controls */}
-         <div className="col-span-full flex justify-center items-center gap-4 mt-8">
+         <div className="col-span-full flex flex-col justify-center items-center gap-4 mt-8">
+            {products.length === 0 && <p className="text-center">No products.</p>}
+
             <PaginationControls
                currentPage={currentPage}
                totalPages={totalPages}
@@ -135,9 +209,8 @@ function PaginationControls({
 }: {
    currentPage: number;
    totalPages: number;
-   searchParams: PageProps["searchParams"];
+   searchParams: ProductPageProps["searchParams"];
 }) {
-   // Create new URLSearchParams object and remove page parameter
    const params = new URLSearchParams();
    Object.entries(searchParams).forEach(([key, value]) => {
       if (key !== "page" && value) {
