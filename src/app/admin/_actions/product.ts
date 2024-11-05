@@ -104,8 +104,8 @@ export async function updateProducts(id: string, prevState: unknown, formData: F
 
    const userData = await getCurrentUserFromSession();
 
-   if (!userData?.id) {
-      return notFound();
+   if (!userData?.userId) {
+      return redirect("/sign-in");
    }
 
    await db.product.update({
@@ -114,6 +114,7 @@ export async function updateProducts(id: string, prevState: unknown, formData: F
          name: data.name,
          description: data.description,
          priceInCents: data.priceInCents,
+         category: data.category,
          filePath,
          imagePath,
       },

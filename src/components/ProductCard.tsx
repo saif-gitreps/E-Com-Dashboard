@@ -15,13 +15,15 @@ import { useRouter } from "next/navigation";
 import { Product } from "@prisma/client";
 import Link from "next/link";
 import AddToCartButton from "@/app/(customerFacing)/_components/AddToCartButton";
-import { Download } from "lucide-react";
+import { Download, Star } from "lucide-react";
+import getAverageRating from "@/lib/get-average-rating";
 
 type ProductCardProps = {
    product: Product;
+   averageRating?: number;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, averageRating }: ProductCardProps) {
    const router = useRouter();
    const { id, name, priceInCents, description, imagePath } = product;
 
@@ -34,7 +36,20 @@ export function ProductCard({ product }: ProductCardProps) {
             <Image src={imagePath} alt={name} fill />
          </div>
          <CardHeader>
-            <CardTitle>{name}</CardTitle>
+            <CardTitle
+               className={`${
+                  averageRating !== undefined && "flex space-x-2 justify-between"
+               }`}
+            >
+               <div>{name}</div>
+
+               {averageRating !== undefined && (
+                  <div className="space-x-2 flex">
+                     <Star className="fill-yellow-500" />
+                     {getAverageRating([], averageRating)}
+                  </div>
+               )}
+            </CardTitle>
             <CardDescription>
                {priceInCents === 1 ? "Free" : formatCurrency(priceInCents / 100)}
             </CardDescription>

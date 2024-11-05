@@ -74,7 +74,7 @@ export default function FilterOptions() {
                   onValueChange={(value) => updateFilter("orderByPrice", value)}
                >
                   <SelectTrigger className="w-full">
-                     <SelectValue placeholder="Order by price" />
+                     <SelectValue placeholder="Order by price" defaultValue="asc" />
                   </SelectTrigger>
                   <SelectContent>
                      <SelectItem value="asc">Lowest</SelectItem>
@@ -90,7 +90,7 @@ export default function FilterOptions() {
                   onValueChange={(value) => updateFilter("orderByRating", value)}
                >
                   <SelectTrigger className="w-full">
-                     <SelectValue placeholder="Order by rating" />
+                     <SelectValue placeholder="Order by rating" defaultValue="desc" />
                   </SelectTrigger>
                   <SelectContent>
                      <SelectItem value="asc">Lowest</SelectItem>
@@ -106,7 +106,7 @@ export default function FilterOptions() {
                   onValueChange={(value) => updateFilter("orderByDate", value)}
                >
                   <SelectTrigger className="w-full">
-                     <SelectValue placeholder="Order by date" />
+                     <SelectValue placeholder="Order by date" defaultValue="desc" />
                   </SelectTrigger>
                   <SelectContent>
                      <SelectItem value="asc">Latest</SelectItem>
@@ -122,7 +122,7 @@ export default function FilterOptions() {
                   onValueChange={(value) => updateFilter("orderBySales", value)}
                >
                   <SelectTrigger className="w-full">
-                     <SelectValue placeholder="Order by prod. sold" />
+                     <SelectValue placeholder="Order by prod. sold" defaultValue="desc" />
                   </SelectTrigger>
                   <SelectContent>
                      <SelectItem value="desc">Most sold</SelectItem>

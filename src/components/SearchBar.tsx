@@ -23,7 +23,11 @@ export default function SearchBar() {
             params.set("searchQuery", searchQuery.toLowerCase());
          }
 
+         params.delete("category");
          params.delete("page");
+         params.delete("orderByPrice");
+         params.delete("orderByRating");
+         params.delete("orderByDate");
 
          router.push(`/products?${params.toString()}`);
       }, 300),

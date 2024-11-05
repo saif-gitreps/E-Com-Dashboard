@@ -1,12 +1,18 @@
-import { ProductReview } from "@prisma/client";
-
 export default function getAverageRating(
-   reviews: {
+   reviews?: {
       rating: number;
-   }[]
-) {
-   const averageRating = (
-      reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
-   ).toPrecision(2);
-   return averageRating;
+   }[],
+   calculatedAverage?: number
+): string {
+   if (calculatedAverage) return calculatedAverage.toPrecision(2);
+
+   if (reviews?.length === 0 || !reviews) return "0";
+
+   let sum: number = 0;
+
+   for (let i = 0; i < reviews.length; i++) {
+      sum += reviews[i].rating;
+   }
+
+   return (sum / reviews.length).toPrecision(2);
 }
