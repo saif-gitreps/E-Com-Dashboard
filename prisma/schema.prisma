@@ -19,13 +19,14 @@ model Product {
   description String @db.Text
   category String @db.VarChar(255)
   isAvailableForPurchase Boolean @default(true)
+  isApprovedByAdmin Boolean @default(false)
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
   userId String @db.Uuid
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  Order Order[]
+  orders Order[]
   productReviews ProductReview[]
   downloadVerifications DownloadVerification[]
 }

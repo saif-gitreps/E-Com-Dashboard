@@ -5,12 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { formatCurrency } from "@/lib/formatter";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { addProducts, updateProducts } from "../../_actions/product";
 import { useFormState, useFormStatus } from "react-dom";
 import { Product } from "@prisma/client";
 import Image from "next/image";
-import { getCurrentUserFromSession } from "@/app/(auth)/_actions/auth";
 import SpinLoader from "@/components/SpinLoader";
 import {
    Select,

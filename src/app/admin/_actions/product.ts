@@ -152,3 +152,15 @@ export async function deleteProduct(id: string) {
    revalidatePath("/products");
    revalidatePath("/");
 }
+
+export async function toggleProductApproval(id: string) {
+   await db.product.update({
+      where: { id },
+      data: {
+         isApprovedByAdmin: true,
+      },
+   });
+
+   revalidatePath("/products");
+   revalidatePath("/");
+}

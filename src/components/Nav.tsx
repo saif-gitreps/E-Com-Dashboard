@@ -75,11 +75,11 @@ type NavItemProps = {
 
 export function NavItem({ className, children, ...props }: NavItemProps) {
    return (
-      <p
+      <div
          {...props}
          className={`p-4 hover:bg-secondary hover:cursor-pointer hover:text-secondary-foreground focus:bg-secondary focus:text-secondary-foreground ${className}`}
       >
          {children}
-      </p>
+      </div>
    );
 }

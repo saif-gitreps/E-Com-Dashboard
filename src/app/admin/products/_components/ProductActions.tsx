@@ -1,7 +1,11 @@
 "use client";
 
 import { useTransition } from "react";
-import { deleteProduct, toggleProductAvailability } from "../../_actions/product";
+import {
+   deleteProduct,
+   toggleProductApproval,
+   toggleProductAvailability,
+} from "../../_actions/product";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 
@@ -45,6 +49,25 @@ export function DeleteDropdownItem({ id, disabled }: { id: string; disabled: boo
          disabled={disabled || isPending}
       >
          Delete
+      </DropdownMenuItem>
+   );
+}
+
+export function ApproveProductDropdownItem({ id }: { id: string }) {
+   const [isPending, startTransaction] = useTransition();
+   const router = useRouter();
+   return (
+      <DropdownMenuItem
+         className="text-green-700"
+         onClick={() => {
+            startTransaction(async () => {
+               await toggleProductApproval(id);
+               router.refresh();
+            });
+         }}
+         disabled={isPending}
+      >
+         Approve
       </DropdownMenuItem>
    );
 }
