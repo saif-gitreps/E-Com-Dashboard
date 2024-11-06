@@ -28,7 +28,8 @@ export type AuthState = {
 
 export async function signIn(
    prevState: AuthState,
-   formData: FormData
+   formData: FormData,
+   toSeller?: boolean
 ): Promise<AuthState> {
    const result = authSchema.safeParse(Object.fromEntries(formData));
 
@@ -51,6 +52,11 @@ export async function signIn(
    }
 
    await createSession(userFromDb.id, userFromDb.role);
+
+   if (toSeller) {
+      redirect("/admin");
+   }
+
    redirect("/");
 }
 

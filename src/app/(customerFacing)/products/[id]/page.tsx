@@ -74,11 +74,11 @@ export default async function ProductViewPage({
 
    return (
       <div className="space-y-10">
-         <Card className="flex sm:flex-row flex-col overflow-hidden justify-between shadow-sm">
-            <div className="relative w-3/5 h-auto aspect-video">
+         <Card className="flex sm:flex-row flex-col overflow-hidden sm:justify-between shadow-sm">
+            <div className="relative sm:w-3/5 h-auto aspect-video">
                <Image src={product.imagePath} alt={product.name} fill />
             </div>
-            <div className="flex flex-col w-2/5">
+            <div className="flex flex-col sm:w-2/5">
                <div className="mb-auto">
                   <CardHeader>
                      <CardTitle className="flex space-x-2">

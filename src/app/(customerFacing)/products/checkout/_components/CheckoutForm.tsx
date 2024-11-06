@@ -57,6 +57,7 @@ export default function CheckoutForm({ products, clientSecret }: CheckoutFormPro
 
             {finalProducts.map((product) => (
                <ProductReviewCard
+                  lastIndex={finalProducts.indexOf(product) === finalProducts.length - 1}
                   key={product.id}
                   product={product}
                   onRemove={() =>
@@ -74,14 +75,18 @@ export default function CheckoutForm({ products, clientSecret }: CheckoutFormPro
 }
 
 function ProductReviewCard({
+   lastIndex,
    product,
    onRemove,
 }: {
+   lastIndex: boolean;
    product: ReviewProduct;
    onRemove?: () => void;
 }) {
    return (
-      <div className="flex justify-between sm:my-0 my-2 p-2">
+      <div
+         className={`flex justify-between sm:my-0 my-2 py-2 ${!lastIndex && "border-b"}`}
+      >
          <div className="flex gap-10 w-5/6 sm:flex-row flex-col">
             <div className="aspect-video flex-shrink-0 w-4/5 sm:w-2/5 relative">
                <Image

@@ -34,7 +34,7 @@ const navItems = [
 
 export function MobileNav() {
    return (
-      <nav className="md:hidden flex items-center">
+      <nav className="md:hidden flex items-center h-14">
          <Sheet>
             <SheetTrigger className="text-xl md:hidden ">
                <Menu size={40} />

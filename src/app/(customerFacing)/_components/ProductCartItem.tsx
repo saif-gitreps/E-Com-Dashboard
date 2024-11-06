@@ -34,8 +34,8 @@ export function ProductCartItem({
    const { removeItem } = useCart();
 
    return (
-      <Card className="flex overflow-hidden justify-between shadow-sm mt-2 h-20 p-1">
-         <div className="flex">
+      <Card className="flex overflow-hidden justify-between shadow-sm mt-2 sm:h-20 p-1">
+         <div className="flex sm:flex-row flex-col">
             <div
                className="relative aspect-video hover:opacity-75 hover:cursor-pointer"
                onClick={() => router.push(`/products/${id}`)}
@@ -52,7 +52,7 @@ export function ProductCartItem({
          <CardFooter className="p-0 flex items-start">
             <Button
                size="sm"
-               className="w-full px-2"
+               className="w-full sm:px-2 flex justify-center items-center"
                variant="destructive"
                onClick={() => removeItem(id)}
             >
