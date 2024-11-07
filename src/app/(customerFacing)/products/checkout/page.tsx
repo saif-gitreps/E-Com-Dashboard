@@ -16,8 +16,6 @@ export default async function CheckoutPage({
 }: {
    searchParams: SearchParams;
 }) {
-   // TODO: handle error cases where params is empty or cart is empty, also handle case where product is null
-
    const productIds = searchParams.pid;
 
    const ids = Array.isArray(productIds) ? productIds : [productIds];

@@ -103,9 +103,7 @@ export default async function AdminDashboard() {
          />
          <DashboardCard
             title={isAdmin ? "All Users" : "Customers"}
-            subtitle={`${formatNumber(
-               userData.averageValuePerUser
-            )} Average sales per user`}
+            subtitle={`${formatNumber(userData.averageValuePerUser)} Average sales`}
             body={formatNumber(userData.userCount)}
          />
          <DashboardCard

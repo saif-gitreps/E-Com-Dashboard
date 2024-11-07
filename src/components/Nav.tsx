@@ -17,7 +17,7 @@ export function Nav({
    return (
       <nav
          className={cn(
-            "bg-primary text-primary-foreground fixed w-full top-0 z-50",
+            "bg-primary text-primary-foreground fixed w-full top-0 z-50 ",
             className
          )}
       >
@@ -26,13 +26,11 @@ export function Nav({
    );
 }
 
-const navItems = [
-   { name: "Home", href: "/", isVisible: true },
-   { name: "Products", href: "/products", isVisible: true },
-   { name: "Sign In", href: "/sign-in", isVisible: true },
-];
-
-export function MobileNav() {
+export function MobileNav({
+   navItems,
+}: {
+   navItems: { name: string; href: string; isVisible: boolean }[];
+}) {
    return (
       <nav className="md:hidden flex items-center h-14">
          <Sheet>

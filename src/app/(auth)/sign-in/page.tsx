@@ -13,10 +13,6 @@ export default function SignIn() {
    const isSeller: boolean = searchParams.get("as") === "seller";
 
    const router = useRouter();
-
-   const origin = searchParams.get("origin");
-   // TODO: redirect from example: cart page to sign-in
-
    return (
       <div className="mt-20 p-2 space-y-5">
          <PageHeader className="text-center">Sign in</PageHeader>

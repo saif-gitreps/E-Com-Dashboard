@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import db from "@/db/db";
 import { cookies } from "next/headers";
 import { JWTPayload } from "jose";
+import { revalidatePath } from "next/cache";
 
 const authSchema = z.object({
    email: z.string().email({ message: "Invalid email address" }).trim(),
@@ -29,7 +30,8 @@ export type AuthState = {
 export async function signIn(
    prevState: AuthState,
    formData: FormData,
-   toSeller?: boolean
+   toSeller?: boolean,
+   origin?: string | null
 ): Promise<AuthState> {
    const result = authSchema.safeParse(Object.fromEntries(formData));
 
@@ -53,9 +55,9 @@ export async function signIn(
 
    await createSession(userFromDb.id, userFromDb.role);
 
-   if (toSeller) {
-      redirect("/admin");
-   }
+   if (toSeller) redirect("/admin");
+
+   if (origin) redirect(origin);
 
    redirect("/");
 }
@@ -98,13 +100,27 @@ export async function signUp(prevState: AuthState, formData: FormData) {
 
    await createSession(newUser.id, newUser.role);
 
-   // TODO: Redirect to the origin at which the user was prompted to sign in
    redirect("/");
 }
 
-export async function logout() {
+const protectedRoutes = [
+   /^\/orders$/,
+   /^\/admin\/.*/,
+   /^\/products\/checkout$/,
+   /^\/products\/download\/.+$/,
+   /^\/profile$/,
+];
+
+export async function logout(pathname: string) {
    await deleteSession();
-   // redirect("/sign-in");
+
+   const isProtectedRoute = protectedRoutes.some((route) => route.test(pathname));
+
+   if (isProtectedRoute) {
+      redirect("/sign-in");
+   } else {
+      revalidatePath(pathname);
+   }
 }
 
 const updateSchema = z.object({

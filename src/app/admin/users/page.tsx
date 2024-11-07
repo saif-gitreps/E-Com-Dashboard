@@ -17,13 +17,19 @@ import {
 import { MoreVertical } from "lucide-react";
 import { DeleteDropDownItem } from "./_components/UserActions";
 import { PageHeader } from "@/components/PageHeader";
+import { getCurrentUserFromSession } from "@/app/(auth)/_actions/auth";
+import { redirect } from "next/navigation";
 
-function getUsers() {
+function getUsers(userId: string) {
    return db.user.findMany({
       select: {
          id: true,
          email: true,
          orders: { select: { pricePaidInCents: true } },
+         products: { select: { id: true } },
+      },
+      where: {
+         id: { not: userId },
       },
       orderBy: { createdAt: "desc" },
    });
@@ -39,7 +45,11 @@ export default function UsersPage() {
 }
 
 async function UsersTable() {
-   const users = await getUsers();
+   const currentUser = await getCurrentUserFromSession();
+
+   if (!currentUser?.userId) redirect("/sign-in");
+
+   const users = await getUsers(currentUser?.userId as string);
 
    if (users.length === 0) return <p>No customers found</p>;
 
@@ -48,6 +58,7 @@ async function UsersTable() {
          <TableHeader>
             <TableRow>
                <TableHead>Email</TableHead>
+               <TableHead>Products selling</TableHead>
                <TableHead>Orders</TableHead>
                <TableHead>Value</TableHead>
                <TableHead className="w-0">
@@ -59,6 +70,7 @@ async function UsersTable() {
             {users.map((user) => (
                <TableRow key={user.id}>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{formatNumber(user.products.length)}</TableCell>
                   <TableCell>{formatNumber(user.orders.length)}</TableCell>
                   <TableCell>
                      {formatCurrency(

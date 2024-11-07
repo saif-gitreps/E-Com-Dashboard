@@ -2,7 +2,12 @@ import Cart from "@/app/(customerFacing)/_components/Cart";
 import SearchBar from "@/components/SearchBar";
 export const dynamic = "force-dynamic";
 
-import { CircleUser } from "lucide-react";
+import {
+   ChartNoAxesCombined,
+   CircleUser,
+   ShoppingBasket,
+   UserRoundPen,
+} from "lucide-react";
 import { cookies } from "next/headers";
 import { decrypt } from "@/lib/session";
 import { MobileNav, Nav, NavLink } from "@/components/Nav";
@@ -15,7 +20,7 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import LogoutButton from "./_components/LogoutButton";
+import LogoutButton from "../../components/LogoutButton";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
    const cookie = cookies().get("session")?.value;
@@ -43,8 +48,9 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
                         )
                   )}
                </div>
+
                <div className="flex items-center justify-between w-full md:w-auto gap-2 px-2">
-                  <MobileNav />
+                  <MobileNav navItems={navItems} />
 
                   <SearchBar />
 
@@ -58,13 +64,31 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
                            </DropdownMenuTrigger>
                            <DropdownMenuContent className="w-48">
                               <DropdownMenuItem asChild>
-                                 <Link href="/profile">Profile</Link>
+                                 <Link href="/profile">
+                                    <UserRoundPen
+                                       size={20}
+                                       className="mr-1 stroke-blue-700"
+                                    />
+                                    Profile
+                                 </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem asChild>
-                                 <Link href="/orders">My Orders</Link>
+                                 <Link href="/orders">
+                                    <ShoppingBasket
+                                       size={20}
+                                       className="mr-1 stroke-green-500"
+                                    />{" "}
+                                    My Orders
+                                 </Link>
                               </DropdownMenuItem>
                               <DropdownMenuItem asChild>
-                                 <Link href="/admin">Sales Dashboard</Link>
+                                 <Link href="/admin">
+                                    <ChartNoAxesCombined
+                                       size={20}
+                                       className="mr-1 stroke-purple-700"
+                                    />
+                                    Sales Dashboard
+                                 </Link>
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem className="text-destructive">

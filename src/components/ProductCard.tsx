@@ -64,7 +64,8 @@ export function ProductCard({ product, averageRating }: ProductCardProps) {
                   size="lg"
                   className="w-full bg-green-700 text-white hover:bg-green-600"
                >
-                  Download now <Download size={18} className="ml-1" />
+                  <Link href={`/products/download/free/${id}`}>Download now</Link>
+                  <Download size={18} className="ml-1" />
                </Button>
             ) : (
                <div className="flex w-full gap-1">

@@ -12,7 +12,7 @@ import db from "@/db/db";
 import { cache } from "@/lib/cache";
 import { formatCurrency } from "@/lib/formatter";
 import { Product } from "@prisma/client";
-import { PackageSearch, Star } from "lucide-react";
+import { Download, PackageSearch, Star } from "lucide-react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -101,12 +101,12 @@ export default async function ProductViewPage({
                </div>
                <CardFooter className="mt-auto flex flex-col py-1">
                   {product.priceInCents === 1 ? (
-                     // TODO : Download functionality
                      <Button
                         size="lg"
                         className="w-full bg-green-700 text-white hover:bg-green-600"
                      >
-                        Download now
+                        <Link href={`/products/download/free/${id}`}>Download now</Link>
+                        <Download size={18} className="ml-1" />
                      </Button>
                   ) : (
                      <div className="flex items-center flex-col">

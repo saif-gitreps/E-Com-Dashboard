@@ -20,6 +20,7 @@ type ProductPageProps = {
 };
 
 export default function ProductPage({ searchParams }: ProductPageProps) {
+   // TODO : on related pages, add a params as category on view all button
    return (
       <div className="space-y-4">
          {searchParams.searchQuery && (

@@ -18,7 +18,6 @@ export default function ProductGridSection({
       <div className="space-y-4">
          <div className="flex gap-4">
             <h2 className="text-3xl font-bold">{title}</h2>
-            {/* {TODO: ADD a query param as catergory, when user clicks view all, the loading product will query products related to that catoery} */}
             <Button variant="outline">
                <Link href="/products" className="flex items-center space-x-2">
                   <span>View all</span>

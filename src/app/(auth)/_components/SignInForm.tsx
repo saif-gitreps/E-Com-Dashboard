@@ -10,9 +10,13 @@ export function SignInForm() {
 
    const isSeller: boolean = searchParams.get("as") === "seller";
 
-   // simple closure to pass the isSeller value to the signIn function
+   const encodedOrigin = searchParams.get("origin") || "/";
+
+   const origin = decodeURIComponent(encodedOrigin);
+
+   // simple closure to pass the isSeller & origin value to the signIn function
    const signInWithSeller = async (prevState: AuthState, formData: FormData) => {
-      return signIn(prevState, formData, isSeller);
+      return signIn(prevState, formData, isSeller, origin);
    };
 
    const [state, action] = useFormState<AuthState, FormData>(signInWithSeller, {});
