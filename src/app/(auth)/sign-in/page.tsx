@@ -1,18 +1,18 @@
 "use client";
 
+import { Suspense } from "react";
 import { PageHeader } from "@/components/PageHeader";
-
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SignInForm } from "../_components/SignInForm";
 
-export default function SignIn() {
+function SignInContent() {
    const searchParams = useSearchParams();
-
-   const isSeller: boolean = searchParams.get("as") === "seller";
+   const isSeller = searchParams.get("as") === "seller";
 
    const router = useRouter();
+
    return (
       <div className="mt-20 p-2 space-y-5">
          <PageHeader className="text-center">Sign in</PageHeader>
@@ -57,5 +57,13 @@ export default function SignIn() {
             </Link>
          </p>
       </div>
+   );
+}
+
+export default function SignIn() {
+   return (
+      <Suspense fallback={<div className="text-center">Loading...</div>}>
+         <SignInContent />
+      </Suspense>
    );
 }
