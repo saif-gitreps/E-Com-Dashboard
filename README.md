@@ -1,50 +1,71 @@
-# Modern and Simple E-Commerce with a simple Admin Dashboard webapp
+# Assets Haven - A Platform for Trading and Downloading Digital Assets and Software
 
-A full-featured, modern e-commerce platform built with **Next.js**, **Tailwind CSS**, **Prisma (SQLite)**, and **Stripe** for transaction management, including webhook confirmations.
+A full-featured, modern e-commerce platform with an Admin/Seller dashboard, where users can browse and purchase various digital products like themes, icons, software, PDFs, study materials, and more. Users can also become sellers, contributing to the community and earning profits, while admins maintain quality control over the products listed on the platform.
 
 ## Features
 
-🔧 **Built with modern technology from scratch**
-- ⚡️ Fast and responsive, powered by [Next.js 14](https://nextjs.org/)
+🔧 **Built from Scratch with Modern Technology**
 
-🎨 **Clean UI and simple UX**
-- 🌟 Includes a streamlined home page and an easy-to-navigate product purchase flow.
-- 🛠 Clean, modern design using [shadcn-ui](https://github.com/shadcn-ui) and **Tailwind CSS**.
+-  ⚡️ Fast and responsive, powered by [Next.js 14](https://nextjs.org/).
 
-🛒 **Full e-commerce functionality**
-- Users can:
-  - 🛍 Purchase products with secure **Stripe** transactions.
-  - 📧 Receive order confirmations via email.
+🎨 **Clean UI and Simple UX**
 
-🔐 **Authentication and security**
-- Secure authentication for both admins and users, ensuring a safe shopping experience.
+-  🛠 Clean, modern, and compact design using [shadcn-ui](https://github.com/shadcn-ui) components and **Tailwind CSS**.
 
-📊 **Admin dashboard**
-- 📋 Admins can manage products with full control, including:
-  - Editing product details.
-  - Deleting products (with restrictions).
-  - Setting product visibility on the marketplace.
-  - **Note**: Admins cannot delete products that have pending orders, ensuring data integrity.
+🧑🏻‍💻 **User Capabilities**
 
-✅ **Product verification**
-- Product verification ensures only high-quality products are available for purchase.
+-  Browse and explore high-quality digital products and softwares.
+-  Filter products by various criteria, such as category, price, sales, reviews, and date.
+-  Search **intuitively** for desired products.
+-  Add items to the cart without needing to be **authenticated**.
+-  Download free products with a single click.
+-  Authenticated users can:
+   -  Purchase items in their cart securely via **card transactions**.
+   -  Receive a **purchase receipt** via email.
+   -  Access their purchased products with secure, limited **download links**.
+   -  Leave **reviews** and **ratings** for purchased items.
+   -  Become a seller and access their own **dashboard**.
+   -  Monitor **sales** and manage product availability.
+   -  Switch seamlessly between **seller** and **customer** roles with a single **sign-in**.
+   -  Update personal details.
 
-📧 **Custom email notifications**
-- 📨 Sends beautifully designed email confirmations after purchases.
+🔐 **Authentication and Security**
 
-💻 **Tech Stack**
-- 🖥 Fully written in **TypeScript** for type safety and scalability.
-- 📜 Utilizes **Zod** for strict input validation and error handling.
-- 🗄 **SQLite** with **Prisma** for easy database migrations during development.
-- 📁 Simple file storage and management using **Node.js**.
-- 🚀 Custom caching strategy combining Next.js's **unstable_cache** and React’s **reactCache**, providing an optimized user experience (UX).
+-  Stateless JWT authentication using secure HTTP-only cookies and the strong HS256 hashing algorithm.
+-  Role-based authorization for admins and users.
+-  Secure transactions powered by **Stripe** with **webhook** support.
+-  Admin verification of products ensures only high-quality items are available on the platform.
+-  Limited-time download links ensure that only verified buyers can download purchased products.
+-  Download history and product links sent via email provide an extra layer of security.
+
+📊 **Admin/Seller Dashboard**
+
+-  Add/edit product details and manage product visibility on the marketplace.
+-  Admins can view all users and monitor transactions on the platform.
+-  Admins and sellers can delete products (with restrictions).
+-  Sellers require admin verification to set product visibility for the first time.
+-  Admins and sellers cannot delete products with pending orders, ensuring data integrity.
+
+💻 **Tech Stack and Features**
+
+-  🖥 Fully written in **TypeScript** for type safety and scalability.
+-  📜 Uses **Zod** for strict input **validation** and error handling.
+-  🗄 **PostgreSQL** with **Prisma** for seamless database migrations and efficient querying.
+-  📁 Simple file storage and management using **Node.js**.
+-  🚀 Custom **caching** strategy that combines Next.js's **unstable_cache** with React’s **reactCache** for optimized performance.
+-  📨 Sends beautifully designed purchase receipts and history emails using **resend** and **react-email**.
+-  🌄 **Paginated** browsing of products with previous/next navigation.
+-  📁 Persistent **cart** state management using **Zustand**, ensuring users don't lose cart items.
+-  🛒 Responsive **cart** feature and **hamburger menu** using **shadcn-ui** sheet components.
 
 🎁 **Additional Features**
-- 🔄 Highly customizable and extendable.
-- 📱 Fully responsive design for mobile and desktop.
+
+-  🔄 Highly customizable and extendable, with additional features planned for future updates.
+-  📱 Fully responsive design for both mobile and desktop devices.
 
 ## Installation
-First, run the development server:
+
+To start the development server:
 
 ```bash
 npm run dev
@@ -55,5 +76,3 @@ pnpm dev
 # or
 bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
