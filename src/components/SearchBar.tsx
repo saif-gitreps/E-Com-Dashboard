@@ -13,26 +13,29 @@ export default function SearchBar() {
 
    const searchParams = useSearchParams();
 
-   const debouncedSearchAction = useCallback(
-      debounce(() => {
-         const params = new URLSearchParams(searchParams.toString());
+   const searchDebounce = debounce(() => {
+      const params = new URLSearchParams(searchParams.toString());
 
-         if (searchQuery === "") {
-            params.delete("searchQuery");
-         } else {
-            params.set("searchQuery", searchQuery.toLowerCase());
-         }
+      if (searchQuery === "") {
+         params.delete("searchQuery");
+      } else {
+         params.set("searchQuery", searchQuery.toLowerCase());
+      }
 
-         params.delete("category");
-         params.delete("page");
-         params.delete("orderByPrice");
-         params.delete("orderByRating");
-         params.delete("orderByDate");
+      params.delete("category");
+      params.delete("page");
+      params.delete("orderByPrice");
+      params.delete("orderByRating");
+      params.delete("orderByDate");
 
-         router.push(`/products?${params.toString()}`);
-      }, 300),
-      [searchQuery, searchParams, router]
-   );
+      router.push(`/products?${params.toString()}`);
+   }, 300);
+
+   const debouncedSearchAction = useCallback(searchDebounce, [
+      searchQuery,
+      searchParams,
+      searchDebounce,
+   ]);
 
    const handleSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value);
