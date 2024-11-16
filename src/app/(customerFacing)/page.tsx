@@ -44,7 +44,7 @@ export default function HomePage(): React.ReactNode {
       <main className="space-y-12">
          <LandingSection />
          <ProductGridSection
-            title="Most popular"
+            title="Our Best Sellers"
             productsFetcher={getMostPopularProducts}
          />
          <ProductGridSection title="Latest" productsFetcher={getNewestProducts} />

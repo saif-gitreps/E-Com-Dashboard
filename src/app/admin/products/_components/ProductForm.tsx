@@ -19,6 +19,21 @@ import {
    SelectValue,
 } from "@/components/ui/select";
 
+export const categories = [
+   "icons",
+   "themes",
+   "fonts",
+   "logos",
+   "photos",
+   "web-templates",
+   "digtal-arts",
+   "books",
+   "study-materials",
+   "pdf",
+   "games",
+   "softwares",
+];
+
 export function ProductForm({ product }: { product?: Product | null }) {
    const [error, action] = useFormState(
       product == null ? addProducts : updateProducts.bind(null, product.id),
@@ -28,21 +43,6 @@ export function ProductForm({ product }: { product?: Product | null }) {
    const [priceInCents, setPriceInCents] = useState<number | undefined>(
       product?.priceInCents
    );
-
-   const categories = [
-      "icons",
-      "themes",
-      "fonts",
-      "logos",
-      "photos",
-      "web-templates",
-      "digtal-arts",
-      "books",
-      "study-materials",
-      "pdf",
-      "games",
-      "softwares",
-   ];
 
    return (
       <form className="space-y-8" action={action}>

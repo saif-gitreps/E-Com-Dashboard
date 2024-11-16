@@ -17,7 +17,7 @@ export function Nav({
    return (
       <nav
          className={cn(
-            "bg-primary text-primary-foreground fixed w-full top-0 z-50 ",
+            "bg-black text-primary-foreground fixed w-full top-0 z-50 ",
             className
          )}
       >
@@ -59,8 +59,8 @@ export function NavLink(props: Omit<ComponentProps<typeof Link>, "className">) {
       <Link
          {...props}
          className={cn(
-            "p-4 hover:bg-secondary hover:text-secondary-foreground focus:bg-secondary focus:text-secondary-foreground",
-            pathname === props.href && "bg-background text-foreground"
+            "p-4 hover:underline underline-offset-8 focus:underline",
+            pathname === props.href && "underline "
          )}
       />
    );
@@ -75,7 +75,7 @@ export function NavItem({ className, children, ...props }: NavItemProps) {
    return (
       <div
          {...props}
-         className={`p-4 hover:bg-secondary hover:cursor-pointer hover:text-secondary-foreground focus:bg-secondary focus:text-secondary-foreground ${className}`}
+         className={`p-4 hover:underline underline-offset-8 focus:underline hover:cursor-pointer ${className}`}
       >
          {children}
       </div>

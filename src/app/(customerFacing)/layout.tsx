@@ -37,7 +37,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
    return (
       <div className="sm:min-h-screen">
          <Nav>
-            <div className="flex flex-row items-center justify-between">
+            <div className="h-16 flex flex-row items-center justify-between">
                <div className="md:flex flex-row items-center hidden">
                   {navItems.map(
                      (item) =>
