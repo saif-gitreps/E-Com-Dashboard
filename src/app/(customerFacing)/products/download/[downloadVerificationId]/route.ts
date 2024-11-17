@@ -1,4 +1,5 @@
 import db from "@/db/db";
+import { getProductDownloadData } from "@/lib/supbase-storage-api";
 import fs from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,9 +15,7 @@ export async function GET(
    if (data == null)
       return NextResponse.redirect(new URL("/products/download/expired", req.url));
 
-   const { size } = await fs.stat(data.product.filePath);
-   const file = await fs.readFile(data.product.filePath);
-   const extension = data.product.filePath.split(".").pop();
+   const { size, file, extension } = await getProductDownloadData(data.product.filePath);
 
    return new NextResponse(file, {
       headers: {

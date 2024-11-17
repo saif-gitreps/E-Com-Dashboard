@@ -1,15 +1,13 @@
 "use server";
 
-import db from "@/db/db";
 import { z } from "zod";
-import fs from "fs/promises";
-import { notFound, redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getCurrentUserFromSession } from "@/app/(auth)/_actions/auth";
+import db from "@/db/db";
+import { deleteFromSupabase, uploadToSupabase } from "@/lib/supbase-storage-api";
 
 const fileSchema = z.instanceof(File, { message: "required" });
-// if file size is 0 then, the other part of Or will not be triggered, the condition will be passed to next refine check.
-// if file size is !0 then we check if the file type is image or not.
 const imageSchema = fileSchema.refine(
    (file) => file.size === 0 || file.type.startsWith("image/")
 );
@@ -25,47 +23,38 @@ const addSchema = z.object({
 
 export async function addProducts(prevState: unknown, formData: FormData) {
    const result = addSchema.safeParse(Object.fromEntries(formData.entries()));
-
    if (!result.success) {
       return result.error.formErrors.fieldErrors;
    }
 
    const data = result.data;
+   const fileUpload = await uploadToSupabase(data.file, "product");
+   const imageUpload = await uploadToSupabase(data.image, "image");
 
-   await fs.mkdir("products", { recursive: true });
-   const filePath = `products/${crypto.randomUUID()}-${data.file.name}`;
-   await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()));
-
-   await fs.mkdir("public/products", { recursive: true });
-   const imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-   await fs.writeFile(`public${imagePath}`, Buffer.from(await data.image.arrayBuffer()));
+   if (!fileUpload || !imageUpload) {
+      redirect("/admin/products");
+   }
 
    const userData = await getCurrentUserFromSession();
-
    if (!userData?.userId) {
       return redirect("/sign-in");
    }
 
-   const product = await db.product.create({
+   await db.product.create({
       data: {
          isAvailableForPurchase: false,
          name: data.name,
          description: data.description,
          priceInCents: data.priceInCents,
          category: data.category,
-         filePath,
-         imagePath,
-         userId: userData?.userId as string,
+         filePath: fileUpload.path,
+         imagePath: imageUpload.publicUrl!,
+         userId: userData.userId as string,
       },
    });
 
-   console.log(product);
-
-   // any changes done by the admin will revalidate the cache.
    revalidatePath("/products");
-
    revalidatePath("/");
-
    redirect("/admin/products");
 }
 
@@ -82,28 +71,28 @@ export async function updateProducts(id: string, prevState: unknown, formData: F
 
    const data = result.data;
    const product = await db.product.findUnique({ where: { id } });
-
-   if (product === null) return notFound();
+   if (!product) return notFound();
 
    let filePath = product.filePath;
-   if (data.file != null && data.file.size > 0) {
-      await fs.unlink(product.filePath);
-      filePath = `products/${crypto.randomUUID()}-${data.file.name}`;
-      await fs.writeFile(filePath, Buffer.from(await data.file.arrayBuffer()));
+   let imagePath = product.imagePath;
+
+   if (data.file) {
+      await deleteFromSupabase(product.filePath);
+      const fileUpload = await uploadToSupabase(data.file, "product");
+      if (fileUpload) {
+         filePath = fileUpload.path;
+      }
    }
 
-   let imagePath = product.imagePath;
-   if (data.image != null && data.image.size > 0) {
-      await fs.unlink(`public${product.imagePath}`);
-      imagePath = `/products/${crypto.randomUUID()}-${data.image.name}`;
-      await fs.writeFile(
-         `public${imagePath}`,
-         Buffer.from(await data.image.arrayBuffer())
-      );
+   if (data.image) {
+      await deleteFromSupabase(product.imagePath);
+      const imageUpload = await uploadToSupabase(data.image, "image");
+      if (imageUpload) {
+         imagePath = imageUpload.publicUrl!;
+      }
    }
 
    const userData = await getCurrentUserFromSession();
-
    if (!userData?.userId) {
       return redirect("/sign-in");
    }
@@ -122,8 +111,19 @@ export async function updateProducts(id: string, prevState: unknown, formData: F
 
    revalidatePath("/products");
    revalidatePath("/");
-
    redirect("/admin/products");
+}
+
+export async function deleteProduct(id: string) {
+   const product = await db.product.delete({ where: { id } });
+
+   if (product === null) return notFound();
+
+   await deleteFromSupabase(product.filePath);
+   await deleteFromSupabase(product.imagePath);
+
+   revalidatePath("/products");
+   revalidatePath("/");
 }
 
 export async function toggleProductAvailability(
@@ -136,18 +136,6 @@ export async function toggleProductAvailability(
          isAvailableForPurchase,
       },
    });
-
-   revalidatePath("/products");
-   revalidatePath("/");
-}
-
-export async function deleteProduct(id: string) {
-   const product = await db.product.delete({ where: { id } });
-
-   if (product === null) return notFound();
-
-   await fs.unlink(product.filePath);
-   await fs.unlink(`public${product.imagePath}`); // not adding / after public, because it is already added in imagePath.
 
    revalidatePath("/products");
    revalidatePath("/");

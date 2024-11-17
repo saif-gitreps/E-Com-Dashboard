@@ -1,4 +1,5 @@
 import db from "@/db/db";
+import { getProductDownloadData } from "@/lib/supbase-storage-api";
 import fs from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -16,9 +17,7 @@ export async function GET(
 
    // TODO: create an order or something to track number of downloads
 
-   const { size } = await fs.stat(product.filePath);
-   const file = await fs.readFile(product.filePath);
-   const extension = product.filePath.split(".").pop();
+   const { size, file, extension } = await getProductDownloadData(product.filePath);
 
    return new NextResponse(file, {
       headers: {

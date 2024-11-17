@@ -32,24 +32,27 @@ export default function AdminProductsPage() {
       <>
          <div className="flex justify-between items-center gap-4">
             <PageHeader>Products</PageHeader>
+
+            <div className="flex space-x-2 italic text-sm">
+               <div className="flex">
+                  <ShieldAlert className="stroke-yellow-500 mr-1" size={20} />
+                  <span className="">Pending approval</span>
+               </div>
+               <div className="flex">
+                  <CheckCircle2 className="stroke-green-600 mr-1" size={20} />
+                  <span className="">Active</span>
+               </div>
+               <div className="flex">
+                  <XCircle className="stroke-destructive mr-1" size={20} />
+                  <span className="">Inactive</span>
+               </div>
+            </div>
+
             <Button asChild>
                <Link href="/admin/products/new">Add Product</Link>
             </Button>
          </div>
-         <div className="flex space-x-2 italic text-sm">
-            <div className="flex">
-               <ShieldAlert className="stroke-yellow-500 mr-1" size={20} />
-               <span className="">Pending approval</span>
-            </div>
-            <div className="flex">
-               <CheckCircle2 className="stroke-green-600 mr-1" size={20} />
-               <span className="">Active</span>
-            </div>
-            <div className="flex">
-               <XCircle className="stroke-destructive mr-1" size={20} />
-               <span className="">Inactive</span>
-            </div>
-         </div>
+
          <ProductsTable />
       </>
    );

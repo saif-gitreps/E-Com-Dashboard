@@ -2,6 +2,7 @@ import db from "@/db/db";
 import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
+import { getProductDownloadData } from "@/lib/supbase-storage-api";
 
 export async function GET(
    req: NextRequest,
@@ -17,9 +18,7 @@ export async function GET(
 
    if (product === null) return notFound();
 
-   const { size } = await fs.stat(product.filePath);
-   const file = await fs.readFile(product.filePath);
-   const extension = product.filePath.split(".").pop();
+   const { size, file, extension } = await getProductDownloadData(product.filePath);
 
    return new NextResponse(file, {
       headers: {
